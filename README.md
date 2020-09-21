@@ -17,7 +17,7 @@ Remote Server Node Software is designed for Python 3.8, tested for both Windows 
 Installation instructions from git
 ```sh
 $ git clone https://github.com/SW7-aau/remote-server.git
-$ cd cd remote-server
+$ cd remote-server
 $ git pull
 ```
 
