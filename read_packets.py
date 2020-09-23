@@ -1,47 +1,48 @@
 import pyshark
+import json
 
 
 def tcp_to_dict(packet):
-    d = {'eth': {}, 'ip': {}, 'tcp': {}}
-    d['eth']['src'] = packet[0].src_oui_resolved
-    d['eth']['dst'] = packet[0].addr_oui_resolved
-    d['ip']['src'] = packet[1].src
-    d['ip']['dst'] = packet[1].dst
-    d['tcp']['src'] = packet[2].srcport
-    d['tcp']['dst'] = packet[2].dstport
+    d = {'timestamp': str(packet.sniff_time), 'protocol': packet.transport_layer, 'size': str(packet.length),
+         'info': {}}
+    d['info']['dst'] = str(packet[1].dst)
+    d['info']['dst_resolved'] = str(packet[0].addr_oui_resolved)
+    d['info']['dst_port'] = packet[2].dstport
+    d['info']['src'] = str(packet[1].src)
+    d['info']['src_resolved'] = str(packet[0].src_oui_resolved)
+    d['info']['src_port'] = packet[2].srcport
 
     return d
 
 
 def udp_to_dict(packet):
-    d = {}
-
-    if str(packet[3].layer_name) == 'ssdp':
-        d = {'eth': {}, 'ip': {}, 'udp': {}, 'ssdp': 'ssdp'}
-    elif str(packet[3].layer_name) == 'dns':
-        d = {'eth': {}, 'ip': {}, 'udp': {}, 'dns': 'dns'}
-    elif str(packet[3].layer_name) == 'mdns':
-        d = {'eth': {}, 'ip': {}, 'udp': {}, 'mdns': 'mdns'}
-    elif str(packet[3].layer_name) == 'db-lsp-disc':
-        d = {'eth': {}, 'ip': {}, 'udp': {}, 'db-lsp-disc': 'db-lsp-disc'}
-    else:
-        d = {'eth': {}, 'ip': {}, 'udp': {}}
-
-    d['eth']['src'] = packet[0].src_oui_resolved
-    d['eth']['dst'] = packet[0].addr_oui_resolved
-    d['ip']['src'] = packet[1].src
-    d['ip']['dst'] = packet[1].dst
-    d['udp']['src'] = packet[2].srcport
-    d['udp']['dst'] = packet[2].dstport
+    d = {'timestamp': str(packet.sniff_time), 'protocol': packet.transport_layer, 'size': str(packet.length),
+         'info': {}}
+    d['info']['dst'] = str(packet[1].dst)
+    d['info']['dst_resolved'] = str(packet[0].addr_oui_resolved)
+    d['info']['dst_port'] = packet[2].dstport
+    d['info']['src'] = str(packet[1].src)
+    d['info']['src_resolved'] = str(packet[0].src_oui_resolved)
+    d['info']['src_port'] = packet[2].srcport
+    d['info']['layer'] = packet[3].layer_name
 
     return d
 
 
 def stp_to_dict(packet):
-    d = {'eth': {}, 'llc': 'llc', 'stp': 'stp'}
+    d = {'timestamp': str(packet.sniff_time), 'protocol': packet[2].layer_name.upper(), 'size': str(packet.length),
+         'info': {}}
+    d['info']['dst_resolved'] = str(packet[0].addr_oui_resolved)
+    d['info']['src_resolved'] = str(packet[0].src_oui_resolved)
 
-    d['eth']['src'] = packet[0].src_oui_resolved
-    d['eth']['dst'] = packet[0].addr_oui_resolved
+    return d
+
+
+def arp_to_dict(packet):
+    d = {'timestamp': str(packet.sniff_time), 'protocol': packet[1].layer_name.upper(), 'size': str(packet.length),
+         'info': {}}
+    d['info']['dst_resolved'] = str(packet[0].addr_oui_resolved)
+    d['info']['src_resolved'] = str(packet[0].src_oui_resolved)
 
     return d
 
@@ -52,22 +53,38 @@ def packet_to_dict(packet):
         protocol = packet[1].proto
 
         if str(protocol) == '6':  # Protocol = TCP
+            print('TCP')
             d = tcp_to_dict(packet)
+            if not d:
+                print("Empty dict")
         elif str(protocol) == '17':  # Protocol = UDP
             print('UDP')
             d = udp_to_dict(packet)
+            if not d:
+                print("Empty dict")
     except AttributeError:
         try:
-            llc_layer = packet[1].layer_name
+            layer_name = packet[1].layer_name
 
-            if str(llc_layer) == 'llc':  # Protocol = STP
+            if str(layer_name) == 'llc':  # Protocol = STP
                 print('STP')
                 d = stp_to_dict(packet)
-        except AttributeError:  # Have not reached here yet
+                if not d:
+                    print("Empty dict")
+            elif str(layer_name) == 'arp':  # Protocol = ARP
+                print('ARP')
+                d = arp_to_dict(packet)
+            else:
+                print('Unknown packet')
+        except AttributeError:  # Should not get here, but is a safety
             print("Other")
             print(packet)
+    if not d:  # Used to find undiscovered protocols
+        print("Empty dict")
 
-    return d
+    json_object = json.dumps(d)
+    print(json_object)
+    return json_object
 
 
 capture = pyshark.LiveCapture(interface='enp3s0')
