@@ -1,4 +1,3 @@
-json
 pyshark
 schedule
 psutil
