@@ -12,7 +12,7 @@ SECONDS_BEFORE_COMMIT = 5
 
 def read_status():
     status_struct = {'timestamp': str(time.time()).split('.')[0],
-                     'CPU%': str(psutil.cpu_percent(interval=None, percpu=False)),
+                     'CPU%': str(psutil.cpu_percent()),
                      'RAM% ': str(psutil.virtual_memory().percent)}
     # Bandwith not included atm.
     status_struct_list.append(status_struct)
