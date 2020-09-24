@@ -3,7 +3,6 @@ import time
 import psutil
 import json
 import requests
-import socket
 
 ip_address = requests.get('https://api.ipify.org').text
 
@@ -30,7 +29,6 @@ def send_node_status(json_object):
 def send_status_list():
     json_object = json.dumps(status_struct_list)
     send_node_status(json_object)
-
     status_struct_list.clear()
 
 
