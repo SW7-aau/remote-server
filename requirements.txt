@@ -1,0 +1,5 @@
+json
+pyshark
+schedule
+psutil
+requests
