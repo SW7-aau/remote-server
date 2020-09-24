@@ -13,7 +13,7 @@ def arg_parsing():
 
 
 def tcp_udp_to_dict(packet, protocol):
-    d = {'timestamp': str(packet.sniff_time), 'protocol': packet.transport_layer, 'size': str(packet.length),
+    d = {'timestamp': packet.sniff_timestamp.split('.')[0], 'protocol': packet.transport_layer, 'size': str(packet.length),
          'info': {}}
     d['info']['dst'] = str(packet[1].dst)
     d['info']['dst_resolved'] = str(packet[0].addr_oui_resolved)
@@ -31,11 +31,11 @@ def tcp_udp_to_dict(packet, protocol):
 def other_to_dict(packet, layer_name):
     d = {}
     if layer_name == 'llc':  # Protocol = STP
-        d = {'timestamp': str(packet.sniff_time), 'protocol': packet[2].layer_name.upper(), 'size': str(packet.length),
-             'info': {}}
+        d = {'timestamp': packet.sniff_timestamp.split('.')[0], 'protocol': packet[2].layer_name.upper(),
+             'size': str(packet.length), 'info': {}}
     elif layer_name == 'arp':  # Protocol = ARP
-        d = {'timestamp': str(packet.sniff_time), 'protocol': packet[1].layer_name.upper(), 'size': str(packet.length),
-             'info': {}}
+        d = {'timestamp': packet.sniff_timestamp.split('.')[0], 'protocol': packet[1].layer_name.upper(),
+             'size': str(packet.length), 'info': {}}
 
     d['info']['dst_resolved'] = str(packet[0].addr_oui_resolved)
     d['info']['src_resolved'] = str(packet[0].src_oui_resolved)
