@@ -66,12 +66,12 @@ def get_packets(packet):
         protocol = str(packet[1].proto)
         d = ip_to_dict(packet, protocol)
 
-        if protocol == '6':  # Protocol = TCP
-            print('TCP')
-        elif protocol == '17':  # Protocol = UDP
-            print('UDP')
-        else:
-            print("yo")
+        # if protocol == '6':  # Protocol = TCP
+        #     print('TCP')
+        # elif protocol == '17':  # Protocol = UDP
+        #     print('UDP')
+        # else:
+        #     print("yo")
         # elif str(protocol) == '2':  # Protocol = IGMP
         #     print('IGMP')
 
@@ -79,14 +79,14 @@ def get_packets(packet):
         layer_name = str(packet[1].layer_name)
         d = other_to_dict(packet, layer_name)
 
-        if layer_name == 'llc':  # Protocol = STP
-            print('STP')
-        elif layer_name == 'arp':  # Protocol = ARP
-            print('ARP')
-        elif layer_name == 'eapol':  # Protocol = EAPOL
-            print('EAPOL')
-        else:
-            print('Unknown packet')
+        # if layer_name == 'llc':  # Protocol = STP
+        #     print('STP')
+        # elif layer_name == 'arp':  # Protocol = ARP
+        #     print('ARP')
+        # elif layer_name == 'eapol':  # Protocol = EAPOL
+        #     print('EAPOL')
+        # else:
+        #     print('Unknown packet')
 
     if not d:  # Used to find undiscovered protocols
         print("Empty dict")
@@ -121,5 +121,6 @@ if __name__ == '__main__':
 
     for n in capture.sniff_continuously():
         packets_dict_list.append(get_packets(n))
+        print(len(packets_dict_list))
         if len(packets_dict_list) == 1000:
             send_packets_list()
