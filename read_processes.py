@@ -24,7 +24,7 @@ def get_processes():
 
 
 def send_node_status(json_object):
-    url = "node-status"
+    url = "127.0.0.1:8080/sendtohost"
     headers = {'Content-type': 'application/json',
                'Accept': 'text/plain',
                'auth-token': 'testtoken',
@@ -43,5 +43,6 @@ def send_processes_list():
 if __name__ == '__main__':
     print('Main')
     get_processes()
+    requests.post('127.0.0.1:8080/sendtohost')
     for i in range(len(processes_dict_list)):
         print(processes_dict_list[i])

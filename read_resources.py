@@ -21,10 +21,11 @@ def get_resources():
 
 
 def send_node_status(json_object):
-    url = "node-status"
+    url = "127.0.0.1:8080/sendtohost"
     headers = {'Content-type': 'application/json',
                'Accept': 'text/plain',
                'auth-token': 'testtoken',
+               'msg_type': '1',
                'nodeid': 'testid',
                'ip-address': str(ip_address)}
     r = requests.post(url, json=json_object, headers=headers)
