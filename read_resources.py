@@ -11,12 +11,13 @@ SECONDS_BEFORE_COMMIT = 5
 
 
 def get_resources():
-    status_struct = {'timestamp': str(time.time()).split('.')[0],
+    tid = str(time.time()).split('.')[0]
+    status_struct = {'timestamp': tid,
                      'CPU%': str(psutil.cpu_percent()),
                      'RAM% ': str(psutil.virtual_memory().percent)}
     # Bandwith not included atm.
     resources_dict_list.append(status_struct)
-    print("b")
+    print('Resources: ', tid)
 
 
 def send_node_status(json_object):
@@ -32,7 +33,8 @@ def send_node_status(json_object):
 
 def send_resources_list():
     json_object = json.dumps(resources_dict_list)
-    send_node_status(json_object)
+    print("Sending")
+    # send_node_status(json_object)
     resources_dict_list.clear()
 
 

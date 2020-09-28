@@ -1,9 +1,14 @@
 import signal
 import time
 
+import read_resources
+import read_processes
+
+
 def interrupt_handler(signum, frame):
         print('Interrupt madafaka')
         globals()['tasks_were_completed'] = False
+
 
 def wait_for_interrupt(): # Not used
     globals()['tasks_were_completed'] = True
@@ -11,12 +16,20 @@ def wait_for_interrupt(): # Not used
     while (tasks_were_completed):
         time.sleep(0)
 
+
 def cyclic_executives():
-    MINOR_CYCLE_DURATION = 5
+    minor_cycle_duration = 5
+    timer = 0
     signal.signal(signal.SIGALRM, interrupt_handler)
     print('Starting cycle...')
     while True:
-        signal.alarm(MINOR_CYCLE_DURATION)
+        signal.alarm(minor_cycle_duration)
+        read_resources.get_resources()
+        if timer % 6 == 0:
+            read_processes.get_processes()
+            read_resources.send_resources_list()
+        timer = timer + 1
         wait_for_interrupt()
+
 
 cyclic_executives()

@@ -44,7 +44,7 @@ def other_to_dict(packet, layer_name):
         d = {'timestamp': packet.sniff_timestamp.split('.')[0],
              'protocol': packet[2].layer_name.upper(),
              'size': str(packet.length), 'info': {}}
-    elif layer_name == 'arp':  # Protocol = ARP
+    elif layer_name == 'arp' or layer_name == 'eapol':  # Protocol = ARP or EAPOL
         d = {'timestamp': packet.sniff_timestamp.split('.')[0],
              'protocol': packet[1].layer_name.upper(),
              'size': str(packet.length), 'info': {}}
@@ -58,13 +58,15 @@ def other_to_dict(packet, layer_name):
 def get_packets(packet):
     d = {}
     try:
-        protocol = packet[1].proto
+        protocol = str(packet[1].proto)
         d = ip_to_dict(packet, protocol)
 
-        # if str(protocol) == '6':  # Protocol = TCP
-        #     print('TCP')
-        # elif str(protocol) == '17':  # Protocol = UDP
-        #     print('UDP')
+        if protocol == '6':  # Protocol = TCP
+            print('TCP')
+        elif protocol == '17':  # Protocol = UDP
+            print('UDP')
+        else:
+            print("yo")
         # elif str(protocol) == '2':  # Protocol = IGMP
         #     print('IGMP')
 
@@ -72,18 +74,20 @@ def get_packets(packet):
         layer_name = str(packet[1].layer_name)
         d = other_to_dict(packet, layer_name)
 
-        # if str(layer_name) == 'llc':  # Protocol = STP
-            # print('STP')
-        # elif str(layer_name) == 'arp':  # Protocol = ARP
-            # print('ARP')
-        # else:
-        #     print('Unknown packet')
+        if layer_name == 'llc':  # Protocol = STP
+            print('STP')
+        elif layer_name == 'arp':  # Protocol = ARP
+            print('ARP')
+        elif layer_name == 'eapol':  # Protocol = EAPOL
+            print('EAPOL')
+        else:
+            print('Unknown packet')
 
     if not d:  # Used to find undiscovered protocols
         print("Empty dict")
 
     json_object = json.dumps(d)
-    # print(json_object)
+    print(json_object)
     return json_object
 
 
@@ -94,8 +98,7 @@ if __name__ == '__main__':
     capture = pyshark.LiveCapture(interface=args.interface)
     packets = []
 
-    for n in capture.sniff_continuously(packet_count=500):
-        print("a")
+    for n in capture.sniff_continuously():
         packets.append(get_packets(n))
 
     print(len(packets))

@@ -14,7 +14,7 @@ SECONDS_BEFORE_COMMIT = 5
 
 
 def packets():
-    capture = pyshark.LiveCapture(interface='enp3s0')  # Usually enp3s0 or wlp3s0
+    capture = pyshark.LiveCapture(interface='wlp3s0')  # Usually enp3s0 or wlp3s0
     packet_list = []
 
     for n in capture.sniff_continuously(packet_count=500):
@@ -25,7 +25,7 @@ def packets():
 
 def resources_and_processes():
     schedule.every(1).second.do(read_resources.get_resources)
-    schedule.every(1).second.do(read_processes.get_processes)
+    schedule.every(5).seconds.do(read_processes.get_processes)
     # schedule.every(SECONDS_BEFORE_COMMIT).seconds.do(read_resources.send_resources_list)
     # schedule.every(SECONDS_BEFORE_COMMIT).seconds.do(read_processes.send_processes_list)
 
