@@ -1,6 +1,11 @@
 import argparse
 import pyshark
 import json
+import requests
+
+
+ip_address = requests.get('https://api.ipify.org').text
+packets_dict_list = []
 
 
 def arg_parsing():
@@ -86,9 +91,26 @@ def get_packets(packet):
     if not d:  # Used to find undiscovered protocols
         print("Empty dict")
 
-    json_object = json.dumps(d)
-    print(json_object)
-    return json_object
+    return d
+
+
+def send_node_status(json_object):
+    url = "http://127.0.0.1:5000/sendtohost"
+    headers = {'Content-type': 'application/json',
+               'Accept': 'text/plain',
+               'auth-token': 'testtoken',
+               'package_type': '2',
+               'nodeid': 'testid',
+               'ip-address': str(ip_address)}
+    r = requests.post(url, json=json_object, headers=headers)
+    print(r.status_code)
+
+
+def send_packets_list():
+    json_object = json.dumps(packets_dict_list)
+    # print(json_object)
+    send_node_status(json_object)
+    packets_dict_list.clear()
 
 
 if __name__ == '__main__':
@@ -96,12 +118,8 @@ if __name__ == '__main__':
     args = arg_parsing()
 
     capture = pyshark.LiveCapture(interface=args.interface)
-    packets = []
 
     for n in capture.sniff_continuously():
-        packets.append(get_packets(n))
-
-    print(len(packets))
-
-    for i in range(len(packets)):
-        print(packets[i])
+        packets_dict_list.append(get_packets(n))
+        if len(packets_dict_list) == 1000:
+            send_packets_list()
