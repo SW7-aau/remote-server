@@ -1,37 +1,40 @@
 from flask import Flask
-from flask import requests
+from flask import request
+
 app = Flask(__name__)
+
 
 @app.route('/')
 def index():
     return 'Server Works!'
 
-def send_node_status(package_type, from_node, from_ip, token, message):
-    if (package_type == 1):
-        url = "sendtoresources"
-    elif (package_type == 2):
-        url = "sendtonetwrok"
-    elif (package_type == 3):
-        url = "sendtoprocess"
+
+def send_node_status(header, message):
+    if header['package_type'] == 1:
+        url = "resources_endpoint"
+    elif header['package_type'] == 2:
+        url = "network_endpoint"
+    elif header['package_type'] == 3:
+        url = "process_endpoint"
     else:
         return
            
-    headers = {'Content-type': 'application/json',
-               'Accept': 'text/plain',
-               'auth-token': token,
-               'nodeid': from_node,
-               'ip-address': from_ip}
-    r = requests.post(url, json=message, headers=headers)
+    # headers = {'Content-type': 'application/json',
+    #            'Accept': 'text/plain',
+    #            'auth-token': header['token'],
+    #            'nodeid': header['from_node'],
+    #            'ip-address': header['from_ip']}
+    r = request.post(url, json=message, headers=header)
     print(r.status_code)
+
+
+@app.route('/sendtohost', methods=['POST'])
+def say_hello():
+    # package_type = request.headers["package_type"]
+    # from_node = request.headers["nodeid"]
+    # from_ip = request.headers["ip-address"]
+    # token = request.headers["auth-token"]
+    # message = request.get_json()
     
-    
-@app.route('/sendtohost')
-def say_hello(requests):
-    package_type = requests.args.headers("package_type")
-    from_node = requests.args.headers["nodeid"]
-    from_ip = requests.args.headers["ip-address"]
-    token = requests.args.headers["auth-token"]
-    message = requests.args.get_json()
-    
-    send_node_status(package_type, from_node, from_ip, token, message)
+    send_node_status(request.headers, request.get_json())
     return 'Hello from Server'
