@@ -2,12 +2,29 @@ import time
 import psutil
 import json
 import requests
+import argparse
 
 import cyclic_executive
 
 
 ip_address = requests.get('https://api.ipify.org').text
 processes_dict_list = []
+
+
+def arg_parsing():
+    parser = argparse.ArgumentParser(prog='Read Processes',
+                                     description='Read Processes running.')
+    parser.add_argument('-c', '--cycle-duration', type=int, default=5,
+                        help='How often processes should be read.')
+    parser.add_argument('-s', '--send-frequency', type=int, default=6,
+                        help='How many times processes should be read '
+                             'before sent.')
+    parser.add_argument('-v', '--verbosity', action='count', default=0,
+                        help='Increase output verbosity.')
+
+    args = parser.parse_args()
+
+    return args
 
 
 def get_processes():
@@ -41,8 +58,16 @@ def send_processes_list():
 
 
 if __name__ == '__main__':
-    cyclic = cyclic_executive.CyclicExecutive(verbosity=1,
-                                              function='get_resources')
+
+    args = arg_parsing()
+
+    verbosity = 1 if args.verbosity != 0 else args.verbosity
+
+    cyclic = cyclic_executive.CyclicExecutive(verbosity=verbosity,
+                                              cycle_duration=args.cycle_duration,
+                                              send_frequency=args.send_frequency,
+                                              func1='get_resources',
+                                              func2='send_processes_list')
 
     while True:
         cyclic.run()

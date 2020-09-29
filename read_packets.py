@@ -14,6 +14,8 @@ def arg_parsing():
     parser.add_argument('interface',
                         help='Network interface '
                              'used to capture network packets.')
+    parser.add_argument('send_frequency',
+                        help='How many packets should be sniffed before sent')
 
     args = parser.parse_args()
 
@@ -122,5 +124,5 @@ if __name__ == '__main__':
     for n in capture.sniff_continuously():
         packets_dict_list.append(get_packets(n))
         print(len(packets_dict_list))
-        if len(packets_dict_list) == 1000:
+        if len(packets_dict_list) == args.send_frequency:
             send_packets_list()
