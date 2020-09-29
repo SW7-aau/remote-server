@@ -11,15 +11,15 @@ packets_dict_list = []
 def arg_parsing():
     parser = argparse.ArgumentParser(prog='Read Packets',
                                      description='Read Network Packets')
-    parser.add_argument('interface',
+    parser.add_argument('-i', '--interface', type=str,
                         help='Network interface '
                              'used to capture network packets.')
-    parser.add_argument('send_frequency',
+    parser.add_argument('-s', '--send-frequency', type=int, default=1000,
                         help='How many packets should be sniffed before sent')
+    parser.add_argument('-v', '--verbosity', action='count', default=0,
+                        help='Increase output verbosity.')
 
-    args = parser.parse_args()
-
-    return args
+    return parser.parse_args()
 
 
 def ip_to_dict(packet, protocol):
@@ -62,35 +62,37 @@ def other_to_dict(packet, layer_name):
     return d
 
 
-def get_packets(packet):
+def get_packets(packet, verbosity):
     d = {}
     try:
         protocol = str(packet[1].proto)
         d = ip_to_dict(packet, protocol)
 
-        # if protocol == '6':  # Protocol = TCP
-        #     print('TCP')
-        # elif protocol == '17':  # Protocol = UDP
-        #     print('UDP')
-        # else:
-        #     print("yo")
-        # elif str(protocol) == '2':  # Protocol = IGMP
-        #     print('IGMP')
+        if verbosity == 1:
+            if protocol == '6':  # Protocol = TCP
+                print('TCP')
+            elif protocol == '17':  # Protocol = UDP
+                print('UDP')
+            elif str(protocol) == '2':  # Protocol = IGMP
+                print('IGMP')
+            else:
+                print('Unknown package')
 
     except AttributeError:
         layer_name = str(packet[1].layer_name)
         d = other_to_dict(packet, layer_name)
 
-        # if layer_name == 'llc':  # Protocol = STP
-        #     print('STP')
-        # elif layer_name == 'arp':  # Protocol = ARP
-        #     print('ARP')
-        # elif layer_name == 'eapol':  # Protocol = EAPOL
-        #     print('EAPOL')
-        # else:
-        #     print('Unknown packet')
+        if verbosity == 1:
+            if layer_name == 'llc':  # Protocol = STP
+                print('STP')
+            elif layer_name == 'arp':  # Protocol = ARP
+                print('ARP')
+            elif layer_name == 'eapol':  # Protocol = EAPOL
+                print('EAPOL')
+            else:
+                print('Unknown package')
 
-    if not d:  # Used to find undiscovered protocols
+    if not d and verbosity == 1:  # Used to find undiscovered protocols
         print("Empty dict")
 
     return d
@@ -119,10 +121,17 @@ if __name__ == '__main__':
     # Parse Args
     args = arg_parsing()
 
+    verbosity = 1 if args.verbosity != 0 else args.verbosity
+
     capture = pyshark.LiveCapture(interface=args.interface)
 
+    if verbosity == 1:
+        print('Starting sniffing...')
+
     for n in capture.sniff_continuously():
-        packets_dict_list.append(get_packets(n))
-        print(len(packets_dict_list))
+        packets_dict_list.append(get_packets(packet=n, verbosity=verbosity))
+
         if len(packets_dict_list) == args.send_frequency:
+            if verbosity == 1:
+                print('Sending packets')
             send_packets_list()
