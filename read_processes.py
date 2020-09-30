@@ -3,6 +3,7 @@ import psutil
 import json
 import requests
 import argparse
+import sys
 
 import cyclic_executive
 
@@ -22,20 +23,22 @@ def arg_parsing():
     parser.add_argument('-v', '--verbosity', action='count', default=0,
                         help='Increase output verbosity.')
 
-    args = parser.parse_args()
-
-    return args
+    return parser.parse_args()
 
 
 def get_processes():
-    tid = str(time.time()).split('.')[0]
+    timestamp = str(time.time()).split('.')[0]
     for proc in psutil.process_iter():
         try:
-            processes_dict_list.append(proc.as_dict())
+            process = proc.as_dict()
+            process['timestamp'] = timestamp
+            processes_dict_list.append(process)
         except (psutil.NoSuchProcess,
                 psutil.AccessDenied,
                 psutil.ZombieProcess):
             pass
+    for i in range(3):
+        print(json.dumps(processes_dict_list[i]))
 
 
 def send_node_status(json_object):
@@ -62,12 +65,11 @@ if __name__ == '__main__':
     args = arg_parsing()
 
     verbosity = 1 if args.verbosity != 0 else args.verbosity
-
+    functions = [sys.modules[__name__], 'get_processes', 'send_processes_list']
     cyclic = cyclic_executive.CyclicExecutive(verbosity=verbosity,
                                               cycle_duration=args.cycle_duration,
                                               send_frequency=args.send_frequency,
-                                              func1='get_resources',
-                                              func2='send_processes_list')
+                                              functions=functions)
 
     while True:
         cyclic.run()

@@ -3,6 +3,7 @@ import psutil
 import json
 import requests
 import argparse
+import sys
 
 import cyclic_executive
 
@@ -19,12 +20,10 @@ def arg_parsing():
     parser.add_argument('-s', '--send-frequency', type=int, default=6,
                         help='How many times resources should be read '
                              'before sent.')
-    parser.add_argument('-v', '--verbosity', action='count', default=0,
+    parser.add_argument('-v', '--verbosity', action='count', default=1,
                         help='Increase output verbosity.')
 
-    args = parser.parse_args()
-
-    return args
+    return parser.parse_args()
 
 
 def get_resources():
@@ -33,6 +32,7 @@ def get_resources():
                      'CPU%': str(psutil.cpu_percent()),
                      'RAM% ': str(psutil.virtual_memory().percent)}
     # Bandwith not included atm.
+    print(status_struct)
     resources_dict_list.append(status_struct)
 
 
@@ -50,7 +50,7 @@ def send_node_status(json_object):
 
 def send_resources_list():
     json_object = json.dumps(resources_dict_list)
-    # print(json_object)
+    print(json_object)
     send_node_status(json_object)
     resources_dict_list.clear()
 
@@ -60,12 +60,11 @@ if __name__ == '__main__':
     args = arg_parsing()
 
     verbosity = 1 if args.verbosity != 0 else args.verbosity
-
+    functions = [sys.modules[__name__], 'get_resources', 'send_resources_list']
     cyclic = cyclic_executive.CyclicExecutive(verbosity=verbosity,
                                               cycle_duration=args.cycle_duration,
                                               send_frequency=args.send_frequency,
-                                              func1='get_resources',
-                                              func2='send_resources_list')
+                                              functions=functions)
 
     while True:
         cyclic.run()
