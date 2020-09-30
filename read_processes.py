@@ -20,7 +20,7 @@ def arg_parsing():
     parser.add_argument('-s', '--send-frequency', type=int, default=6,
                         help='How many times processes should be read '
                              'before sent.')
-    parser.add_argument('-v', '--verbosity', action='count', default=0,
+    parser.add_argument('-v', '--verbosity', action='count', default=1,
                         help='Increase output verbosity.')
 
     return parser.parse_args()
@@ -37,8 +37,6 @@ def get_processes():
                 psutil.AccessDenied,
                 psutil.ZombieProcess):
             pass
-    for i in range(3):
-        print(json.dumps(processes_dict_list[i]))
 
 
 def send_node_status(json_object):
