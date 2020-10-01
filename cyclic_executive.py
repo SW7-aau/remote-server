@@ -3,9 +3,7 @@ import time
 
 
 class CyclicExecutive:
-    """
-    Scheduler
-    """
+    """ Scheduler """
     def __init__(self, verbosity, cycle_duration, send_frequency,
                  functions):
         """
