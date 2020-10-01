@@ -11,12 +11,12 @@ packets_dict_list = []
 def arg_parsing():
     parser = argparse.ArgumentParser(prog='Read Packets',
                                      description='Read Network Packets')
-    parser.add_argument('-i', '--interface', type=str,
+    parser.add_argument('-i', '--interface', type=str, default='wlp3s0',
                         help='Network interface '
                              'used to capture network packets.')
-    parser.add_argument('-s', '--send-frequency', type=int, default=1000,
+    parser.add_argument('-s', '--send-frequency', type=int, default=50,
                         help='How many packets should be sniffed before sent')
-    parser.add_argument('-v', '--verbosity', action='count', default=0,
+    parser.add_argument('-v', '--verbosity', action='count', default=1,
                         help='Increase output verbosity.')
 
     return parser.parse_args()
@@ -39,7 +39,7 @@ def ip_to_dict(packet, protocol):
         d['info']['src'] = str(packet[1].src)
         d['info']['src_resolved'] = str(packet[0].src_oui_resolved)
         d['info']['src_port'] = packet[2].srcport
-        if protocol == 17:  # Protocol = UPD  ---- Else TCP
+        if protocol == '17':  # Protocol = UPD  ---- Else TCP
             d['info']['layer'] = packet[3].layer_name
 
     return d
@@ -67,6 +67,7 @@ def get_packets(packet, verbosity):
     try:
         protocol = str(packet[1].proto)
         d = ip_to_dict(packet, protocol)
+        packets_dict_list.append(d)
 
         if verbosity == 1:
             if protocol == '6':  # Protocol = TCP
@@ -106,6 +107,7 @@ def send_node_status(json_object):
                'package_type': '2',
                'nodeid': 'testid',
                'ip-address': str(ip_address)}
+    print(json_object)
     r = requests.post(url, json=json_object, headers=headers)
     print(r.status_code)
 
@@ -127,7 +129,8 @@ if __name__ == '__main__':
         print('Starting sniffing...')
 
     for n in capture.sniff_continuously():
-        packets_dict_list.append(get_packets(packet=n, verbosity=verbosity))
+        # packets_dict_list.append(get_packets(packet=n, verbosity=verbosity))
+        get_packets(packet=n, verbosity=verbosity)
 
         if len(packets_dict_list) == args.send_frequency:
             if verbosity == 1:
