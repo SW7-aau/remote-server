@@ -1,6 +1,5 @@
 import time
 import psutil
-import json
 import requests
 import argparse
 import sys
