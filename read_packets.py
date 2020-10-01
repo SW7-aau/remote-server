@@ -11,12 +11,12 @@ packets_dict_list = []
 def arg_parsing():
     parser = argparse.ArgumentParser(prog='Read Packets',
                                      description='Read Network Packets')
-    parser.add_argument('-i', '--interface', type=str, default='wlp3s0',
+    parser.add_argument('-i', '--interface',
                         help='Network interface '
                              'used to capture network packets.')
     parser.add_argument('-s', '--send-frequency', type=int, default=50,
                         help='How many packets should be sniffed before sent')
-    parser.add_argument('-v', '--verbosity', action='count', default=1,
+    parser.add_argument('-v', '--verbosity', type=int, default=1,
                         help='Increase output verbosity.')
 
     return parser.parse_args()
@@ -81,7 +81,7 @@ def get_packets(packet, verbosity):
 
     except AttributeError:
         layer_name = str(packet[1].layer_name)
-        d = other_to_dict(packet, layer_name)
+        # d = other_to_dict(packet, layer_name)
 
         if verbosity == 1:
             if layer_name == 'llc':  # Protocol = STP
