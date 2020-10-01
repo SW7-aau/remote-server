@@ -21,15 +21,12 @@ def send_node_status(old_headers, message):
     else:
         return
 
-    print('Sent to: ', url)
+    print('Sent to: ', old_headers['package_type'])
     headers = {'Content-Type': 'application/json',
                'Accept': 'text/plain',
                'auth-token': old_headers['auth-token'],
                'nodeid': old_headers['nodeid'],
                'ip-address': old_headers['ip-address']}
-    print(headers)
-    print(type(message))
-    print(message)
     r = requests.post(url, json=message, headers=headers)
     print(r.status_code)
 
