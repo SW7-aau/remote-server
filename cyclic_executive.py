@@ -1,13 +1,20 @@
 import signal
 import time
 
-import read_processes
-import read_resources
-
 
 class CyclicExecutive:
-    def __init__(self, verbosity=0, cycle_duration=5, send_frequency=6,
-                 functions=[]):
+    """
+    Scheduler
+    """
+    def __init__(self, verbosity, cycle_duration, send_frequency,
+                 functions):
+        """
+        :param verbosity: If scheduler should be verbose
+        :param cycle_duration: How often functions[1] should be called
+        :param send_frequency: How often functions[1] should be called before
+                                functions[2]
+        :param functions: The module and functions names
+        """
         self.verbosity = verbosity
         self.cycle_duration = cycle_duration
         self.send_frequency = send_frequency
