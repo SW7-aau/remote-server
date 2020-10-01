@@ -1,6 +1,5 @@
 import argparse
 import pyshark
-import json
 import requests
 
 
