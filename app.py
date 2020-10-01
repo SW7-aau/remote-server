@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import request
 import requests
+import json
 
 app = Flask(__name__)
 
@@ -21,11 +22,14 @@ def send_node_status(old_headers, message):
         return
 
     print('Sent to: ', url)
-    headers = {'Content-type': 'application/json',
+    headers = {'Content-Type': 'application/json',
                'Accept': 'text/plain',
                'auth-token': old_headers['auth-token'],
                'nodeid': old_headers['nodeid'],
                'ip-address': old_headers['ip-address']}
+    print(headers)
+    print(type(message))
+    print(message)
     r = requests.post(url, json=message, headers=headers)
     print(r.status_code)
 

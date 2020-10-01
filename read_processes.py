@@ -52,9 +52,7 @@ def send_node_status(json_object):
 
 
 def send_processes_list():
-    json_object = json.dumps(processes_dict_list)
-    # print(json_object)
-    send_node_status(json_object)
+    send_node_status(processes_dict_list)
     processes_dict_list.clear()
 
 

@@ -27,10 +27,10 @@ def arg_parsing():
 
 
 def get_resources():
-    tid = str(time.time()).split('.')[0]
-    status_struct = {'timestamp': tid,
+    timestamp = str(time.time()).split('.')[0]
+    status_struct = {'timestamp': timestamp,
                      'CPU%': str(psutil.cpu_percent()),
-                     'RAM% ': str(psutil.virtual_memory().percent)}
+                     'RAM%': str(psutil.virtual_memory().percent)}
     # Bandwith not included atm.
     print(status_struct)
     resources_dict_list.append(status_struct)
@@ -49,9 +49,7 @@ def send_node_status(json_object):
 
 
 def send_resources_list():
-    json_object = json.dumps(resources_dict_list)
-    print(json_object)
-    send_node_status(json_object)
+    send_node_status(resources_dict_list)
     resources_dict_list.clear()
 
 

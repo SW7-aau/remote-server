@@ -111,9 +111,7 @@ def send_node_status(json_object):
 
 
 def send_packets_list():
-    json_object = json.dumps(packets_dict_list)
-    # print(json_object)
-    send_node_status(json_object)
+    send_node_status(packets_dict_list)
     packets_dict_list.clear()
 
 
