@@ -51,6 +51,7 @@ def send_node_status(json_object):
                'ip-address': str(ip_address)}
     r = requests.post(url, json=json_object, headers=headers)
     print(r.status_code)
+    return r.status_code
 
 
 def send_processes_list():

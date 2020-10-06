@@ -30,6 +30,18 @@ class CyclicExecutive:
         while self.task_completed:
             time.sleep(0)
 
+    def job(self, counter):
+        #Read metrics
+        getattr(self.functions[0], self.functions[1])()
+        if self.verbosity == 1:
+            print('Resources read')
+        
+        #Send Metrics
+        if counter % self.send_frequency == 0:
+            getattr(self.functions[0], self.functions[2])()
+            if self.verbosity == 1:
+                print('Resources sent')
+
     def run(self):
         counter = 1
         signal.signal(signal.SIGALRM, self.interrupt_handler)
@@ -37,12 +49,6 @@ class CyclicExecutive:
             print('Starting cycle...')
         while True:
             signal.alarm(self.cycle_duration)
-            getattr(self.functions[0], self.functions[1])()
-            if self.verbosity == 1:
-                print('Resources read')
-            if counter % self.send_frequency == 0:
-                getattr(self.functions[0], self.functions[2])()
-                if self.verbosity == 1:
-                    print('Resources sent')
+            self.job(counter)
             counter = counter + 1
             self.wait_for_interrupt()

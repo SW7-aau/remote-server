@@ -11,7 +11,6 @@ app = Flask(__name__)
 def index():
     return 'Server Works!'
 
-#Establishes connection to services in need of monitoring
 def send_node_status(old_headers, message):
     if old_headers['package_type'] == '1':
         url = "https://europe-west3-wide-office-262621.cloudfunctions.net/node-status"
