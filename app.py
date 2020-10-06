@@ -1,3 +1,5 @@
+#The server monitor application (Assumed)
+
 from flask import Flask
 from flask import request
 import requests
@@ -9,7 +11,7 @@ app = Flask(__name__)
 def index():
     return 'Server Works!'
 
-
+#Establishes connection to services in need of monitoring
 def send_node_status(old_headers, message):
     if old_headers['package_type'] == '1':
         url = "https://europe-west3-wide-office-262621.cloudfunctions.net/node-status"
@@ -29,7 +31,7 @@ def send_node_status(old_headers, message):
     r = requests.post(url, json=message, headers=headers)
     print(r.status_code)
 
-
+#I assume this is sending a "listen here you lil' shit" message
 @app.route('/sendtohost', methods=['POST'])
 def say_hello():
     # package_type = request.headers["package_type"]

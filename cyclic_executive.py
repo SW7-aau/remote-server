@@ -1,7 +1,9 @@
 import signal
 import time
 
-
+#Scheduler class to be instantiated as part of an application
+#Arguments given by said application.
+#getattr is used to access those functions, with function 1 always being a getter while function 2 is a sender.
 class CyclicExecutive:
     def __init__(self, verbosity, cycle_duration, send_frequency,
                  functions):
