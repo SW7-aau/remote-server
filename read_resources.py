@@ -45,7 +45,6 @@ def send_node_status(json_object):
                'ip-address': str(ip_address)}
     r = requests.post(url, json=json_object, headers=headers)
     print(r.status_code)
-    return r.status_code
 
 #Clears batch of metric reading after calling send_node_status
 def send_resources_list():
