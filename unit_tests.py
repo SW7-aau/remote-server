@@ -18,7 +18,7 @@ class TestStringMethods(unittest.TestCase):
                     'nodeid': 'testid',
                     'ip-address': str(ip_address)}
         r = requests.post(url, [], headers=headers)
-        self.assertTrue(r.status_code == 200)
+        self.assertTrue(r.status_code == '200')
 
     #Test if we get something out of the read function
     def test_resource_read(self):
@@ -27,11 +27,11 @@ class TestStringMethods(unittest.TestCase):
 
     #Test if we can successfully send resource metrics
     def test_resource_send(self):
-        self.assertTrue(read_resources.send_node_status([]) == 200)
+        self.assertTrue(read_resources.send_node_status([]) == '200')
 
     def test_process_read(self):
         read_processes.get_processes()
-        assert(len(read_processes.processes_dict_list) == 1)
+        self.assertTrue(len(read_processes.processes_dict_list) == 1)
 
 if __name__ == '__main__':
     unittest.main()
