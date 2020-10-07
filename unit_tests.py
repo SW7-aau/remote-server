@@ -1,7 +1,6 @@
 import unittest
 import app
-import read_resources
-import read_processes
+import mocks
 import requests
 
 ip_address = requests.get('https://api.ipify.org').text

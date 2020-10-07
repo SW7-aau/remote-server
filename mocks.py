@@ -1,5 +1,16 @@
+import time
+import psutil
+
 class request():
     def post(self, url, json, headers):
+        
+        
+    def get(self, url):
+        
+    class Response():
+        status_code = 0
+        def __init__(self, status_code):
+            self.status_code = status_code
         
 class read_resources():
     resources_dict_list = []
@@ -10,7 +21,7 @@ class read_resources():
             'RAM%': str(psutil.virtual_memory().percent)}
         # Bandwith not included atm.
         print(status_struct)
-        resources_dict_list.append(status_struct)
+        return status_struct
         
     def send_node_status(self, json_object):
         url = "http://127.0.0.1:5000/sendtohost"
