@@ -25,8 +25,7 @@ class CyclicExecutive:
 
     def wait_for_interrupt(self):
         self.task_completed = True
-        while self.task_completed:
-            time.sleep(0)
+        signal.pause()
 
     def run(self):
         counter = 1
