@@ -13,11 +13,11 @@ def index():
 
 def send_node_status(old_headers, message):
     if old_headers['package_type'] == '1':
-        url = "https://europe-west3-wide-office-262621.cloudfunctions.net/node-status"
+        url = "http://217.69.10.141:5000/node-resources"
     elif old_headers['package_type'] == '2':
-        url = "https://europe-west3-wide-office-262621.cloudfunctions.net/node-network"
+        url = "http://217.69.10.141:5000/node-network"
     elif old_headers['package_type'] == '3':
-        url = "https://europe-west3-wide-office-262621.cloudfunctions.net/node-processess"
+        url = "http://217.69.10.141:5000/node-proc"
     else:
         return
 
@@ -41,3 +41,7 @@ def say_hello():
 
     send_node_status(request.headers, request.get_json())
     return 'Hello from Server'
+
+if __name__ == '__main__':
+    app.debug = True
+    app.run(host = '127.0.0.1',port=5000)
