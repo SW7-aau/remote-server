@@ -35,7 +35,12 @@ class TestStringMethods(unittest.TestCase):
 
     def test_resource_missing_message(self):
         rr = mock_read_resources.read_resources()
-        result = rr.send_node_status({})
+        result = rr.send_node_status([{}])
+        self.assertFalse(result == 200)
+
+    def test_resource_empty_message(self):
+        rr = mock_read_resources.read_resources()
+        result = rr.send_node_status([])
         self.assertFalse(result == 200)
 
     #As of writing, process related tests will fail
