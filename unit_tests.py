@@ -38,10 +38,12 @@ class TestStringMethods(unittest.TestCase):
         result = rr.send_node_status([{}])
         self.assertFalse(result == 200)
 
+    #Considering that an empty list technically doesn't break anything
+    #Maybe switch to assertTrue instead?
     def test_resource_empty_message(self):
         rr = mock_read_resources.read_resources()
         result = rr.send_node_status([])
-        self.assertFalse(result == 200)
+        self.assertTrue(result == 200)
 
     #As of writing, process related tests will fail
     #As there is, to my knowledge, no handling of them in the nodes/api.
