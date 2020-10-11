@@ -1,7 +1,5 @@
-import mock_nodes
-
-
-requests = requests()
+import mock_requests
+requests = mock_requests.requests()
 
 def index():
     return 'Server Works!'

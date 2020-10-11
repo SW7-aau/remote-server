@@ -1,7 +1,7 @@
 import time
 import psutil
-from mock_app import requests
-requests = requests()
+import mock_requests
+requests = mock_requests.requests()
 
 processes_dict_list = []
 

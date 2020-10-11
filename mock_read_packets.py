@@ -1,5 +1,5 @@
-from mock_app import requests
-requests = requests()
+import mock_requests
+requests = mock_requests.requests()
 
 packets_dict_list = []
 def send_node_status(json_object):
