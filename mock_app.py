@@ -3,7 +3,7 @@ import mock_nodes
 class requests():
     def post(self, url, json, headers):
         if(url == "http://217.69.10.141:5000/node-resources"):
-            return self.Response(mock_nodes.node_resources(json))
+            return self.Response(mock_nodes.node_resources(message=json))
         if(url == "http://217.69.10.141:5000/node-network"):
             return self.Response(mock_nodes.node_network(json))
     
