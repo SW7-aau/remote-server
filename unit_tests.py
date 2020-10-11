@@ -39,7 +39,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertFalse(result == 200)
 
     #Considering that an empty list technically doesn't break anything
-    #Maybe switch to assertTrue instead?
+    #Maybe assertTrue is fine?
     def test_resource_empty_message(self):
         rr = mock_read_resources.read_resources()
         result = rr.send_node_status([])
