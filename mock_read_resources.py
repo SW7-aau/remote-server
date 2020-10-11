@@ -1,9 +1,9 @@
 import time
 import psutil
 from mock_app import requests
-requests = requests()
 
 class read_resources():
+    requests = requests()
     resources_dict_list = []
     def get_resources(self):
         timestamp = str(time.time()).split('.')[0]
@@ -22,5 +22,5 @@ class read_resources():
                 'package_type': '1',
                 'nodeid': 'testid',
                 'ip-address': "127.0.0.1"}
-        r = requests.post(url, json=json_object, headers=headers)
+        r = self.requests.post(url, json=json_object, headers=headers)
         return r.status_code

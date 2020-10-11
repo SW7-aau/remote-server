@@ -15,6 +15,10 @@ class TestStringMethods(unittest.TestCase):
         message = {'CPU%': "50%", 'RAM': "30%"}
         result = rr.send_node_status(message)
         self.assertFalse(result == 200)
+
+    def test_resource_missing_message_cpu(self):
+        rr = read_resources()
+        message = {}
         
 
 if __name__ == '__main__':
