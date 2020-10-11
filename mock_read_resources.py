@@ -1,10 +1,10 @@
 import time
 import psutil
-from mock_app import requests
+import mock_app
 
 class read_resources():
-    requests = requests()
     resources_dict_list = []
+    requests = mock_app.requests()
     def get_resources(self):
         timestamp = str(time.time()).split('.')[0]
         status_struct = {'timestamp': timestamp,
