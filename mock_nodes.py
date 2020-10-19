@@ -7,7 +7,7 @@ def node_resources(message):
             timestamp = datetime.fromtimestamp(int(i['timestamp'])).strftime("%Y-%m-%d %I:%M:%S")
             cpu_percent = i['CPU%']
             ram_percent = i['RAM%']
-            print("timestamp : " + str(timestamp) + 
+            print("timestamp : " + str(timestamp) +
                     "cpu : " + str(cpu_percent) +
                     "ram : " + str(ram_percent))
         return 200
@@ -21,7 +21,7 @@ def node_network(message):
             timestamp = datetime.fromtimestamp(int(i['timestamp'])).strftime("%Y-%m-%d %I:%M:%S")
             size = i['size']
             info = i['info']
-            print("protocol : " + str(protocol) + 
+            print("protocol : " + str(protocol) +
                     "timestamp : " + str(timestamp) +
                     "size : " + str(size) +
                     "info : " + str(info))

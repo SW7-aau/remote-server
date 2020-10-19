@@ -4,7 +4,7 @@ class read_packets():
     packets_dict_list = []
     requests = mock_requests.requests()
 
-    def ip_to_dict(self, packet, protocol):
+    def ip_to_dict(packet, protocol):
         d = {'timestamp': packet.sniff_timestamp.split('.')[0],
             'protocol': packet.transport_layer, 'size': str(packet.length),
             'info': {}}
@@ -23,11 +23,10 @@ class read_packets():
             d['info']['src_port'] = packet[2].srcport
             if protocol == '17':  # Protocol = UPD  ---- Else TCP
                 d['info']['layer'] = packet[3].layer_name
-
         return d
 
 
-    def other_to_dict(self, packet, layer_name):
+    def other_to_dict(packet, layer_name):
         d = {}
         if layer_name == 'llc':  # Protocol = STP
             d = {'timestamp': packet.sniff_timestamp.split('.')[0],
