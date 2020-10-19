@@ -1,5 +1,4 @@
 import signal
-import time
 
 #Scheduler class to be instantiated as part of an application
 #Arguments given by said application.
@@ -34,7 +33,6 @@ class CyclicExecutive:
         getattr(self.functions[0], self.functions[1])()
         if self.verbosity == 1:
             print('Resources read')
-        
         #Send Metrics
         if counter % self.send_frequency == 0:
             getattr(self.functions[0], self.functions[2])()

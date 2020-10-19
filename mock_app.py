@@ -6,11 +6,9 @@ class requests():
             return self.Response(mock_nodes.node_resources(message=json))
         if(url == "http://217.69.10.141:5000/node-network"):
             return self.Response(mock_nodes.node_network(json))
-    
     class Response():
         def __init__(self, status_code):
-            self.status_code = status_code  
-requests = requests()
+            self.status_code = status_code
 
 def index():
     return 'Server Works!'
@@ -43,3 +41,5 @@ def say_hello(headers, json):
     # message = request.get_json()
 
     return send_node_status(headers, json)
+
+requests = requests()

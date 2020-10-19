@@ -1,8 +1,8 @@
 import unittest
 import time
 import mock_read_resources
-import mock_read_process
-import mock_read_packets
+#import mock_read_process
+#import mock_read_packets
 
 
 class TestStringMethods(unittest.TestCase):
