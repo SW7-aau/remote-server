@@ -44,7 +44,6 @@ class TestStringMethods(unittest.TestCase):
         rr = mock_read_resources.read_resources()
         result = rr.send_node_status([])
         self.assertTrue(result == 200)
-
     #As of writing, process related tests will fail
     #As there is, to my knowledge, no handling of them in the nodes/api.
     # def test_process_sending(self):

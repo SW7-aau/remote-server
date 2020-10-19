@@ -1,10 +1,6 @@
 import mock_requests
 
-class read_packets():
-    packets_dict_list = []
-    requests = mock_requests.requests()
-
-    def ip_to_dict(packet, protocol):
+def ip_to_dict(packet, protocol):
         d = {'timestamp': packet.sniff_timestamp.split('.')[0],
             'protocol': packet.transport_layer, 'size': str(packet.length),
             'info': {}}
@@ -25,6 +21,9 @@ class read_packets():
                 d['info']['layer'] = packet[3].layer_name
         return d
 
+class read_packets():
+    packets_dict_list = []
+    requests = mock_requests.requests()
 
     def other_to_dict(packet, layer_name):
         d = {}
@@ -47,7 +46,7 @@ class read_packets():
         d = {}
         try:
             protocol = str(packet[1].proto)
-            d = self.ip_to_dict(packet, protocol)
+            d = ip_to_dict(packet, protocol)
             self.packets_dict_list.append(d)
 
             if verbosity == 1:
