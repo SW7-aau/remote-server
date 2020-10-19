@@ -3,6 +3,8 @@ from flask import request
 import requests
 
 app = Flask(__name__)
+main_queue = []
+send_queue = []
 
 
 @app.route('/')
@@ -32,11 +34,26 @@ def send_node_status(old_headers, message):
 
 @app.route('/sendtohost', methods=['POST'])
 def say_hello():
+    data_dict = []
     # package_type = request.headers["package_type"]
     # from_node = request.headers["nodeid"]
     # from_ip = request.headers["ip-address"]
     # token = request.headers["auth-token"]
     # message = request.get_json()
+    send_queue.append(main_queue)
+    main_queue.clear()
 
-    send_node_status(request.headers, request.get_json())
+    data = send_queue.pop(0)
+
+    data_dict.append(data)
+    data_dict.append(hash(data))
+
+    send_node_status(request.headers, data_dict)
+    data_dict.clear()
     return 'Hello from Server'
+
+
+@app.route('/storedata', methods=['POST'])
+def information_queue():
+    main_queue.append(request.get_json())
+
