@@ -1,13 +1,15 @@
-#The server monitor application (Assumed)
+import mock_nodes
 
-from flask import Flask
-from flask import request
-import requests
+class requests():
+    def post(self, url, json, headers):
+        if(url == "http://217.69.10.141:5000/node-resources"):
+            return self.Response(mock_nodes.node_resources(message=json))
+        if(url == "http://217.69.10.141:5000/node-network"):
+            return self.Response(mock_nodes.node_network(json))
+    class Response():
+        def __init__(self, status_code):
+            self.status_code = status_code
 
-app = Flask(__name__)
-
-
-@app.route('/')
 def index():
     return 'Server Works!'
 
@@ -28,20 +30,16 @@ def send_node_status(old_headers, message):
                'nodeid': old_headers['nodeid'],
                'ip-address': old_headers['ip-address']}
     r = requests.post(url, json=message, headers=headers)
-    print(r.status_code)
+    return r.status_code
 
-#I assume this is sending a "listen here you lil' shit" message
-@app.route('/sendtohost', methods=['POST'])
-def say_hello():
+
+def say_hello(headers, json):
     # package_type = request.headers["package_type"]
     # from_node = request.headers["nodeid"]
     # from_ip = request.headers["ip-address"]
     # token = request.headers["auth-token"]
     # message = request.get_json()
 
-    send_node_status(request.headers, request.get_json())
-    return 'Hello from Server'
+    return send_node_status(headers, json)
 
-if __name__ == '__main__':
-    app.debug = True
-    app.run(host = '127.0.0.1',port=5000)
+requests = requests()
