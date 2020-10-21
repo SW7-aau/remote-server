@@ -15,7 +15,7 @@ def send_hash(old_headers, message):
     url = "Hash endpoint url here"
     headers = {'Content-Type': 'application/json',
                'Accept': 'text/plain',
-               'auth-token': old_headers['auth-token'], #TODO do something here to get a proper auth token
+               'auth-token': old_headers['auth-token']
                }
     r = requests.post(url, json=message, headers=headers)
     return r.status_code
@@ -80,7 +80,8 @@ def unpack_and_send():
     if resources_status & packages_status & processes_status == 200:
         return resources_status
     else:
-        return "500" #TODO error code here
+
+        return "Failed to send to host, resend request"
 
 @app.route('/sendtoleader', methods=['POST'])
 def leader_send():
@@ -89,10 +90,10 @@ def leader_send():
 
     data = send_queue(0)
 
-    r = requests.post("127.0.0.1:5000", json=data) #TODO find a way to get leader url for endpoint
+    r = requests.post(leader_url, json=data) #TODO retrieve leader url from election guys
     if r.status_code == 200:
         send_queue.remove(data) # or use pop here instead to remove first index in queue
-
+    #TODO else statement for handling repeat failures to send to host
     
     return 'Data Sent to Leader'
 
