@@ -47,7 +47,7 @@ def unpack_and_send(request):
 
 
 def send_hash(old_headers, message):
-    url = "http://217.69.10.141:5000/node-hash"
+    url = "http://217.69.10.141:5000/node-hash" #node hash url
     headers = {'Content-Type': 'application/json',
                'Accept': 'text/plain',
                'auth-token': old_headers['auth-token']
@@ -89,16 +89,17 @@ def send_data():
 
 @app.route('/sendtoleader', methods=['POST'])
 def leader_send():
-    send_queue.append(main_queue)
-    main_queue.clear()
+    if not send_queue:
+        send_queue.append(main_queue)
+        main_queue.clear()
 
-    data = send_queue(0)
+
+    data = send_queue
 
     r = requests.post(leader_url, json=data) #TODO retrieve leader url from election guys
     if r.status_code == 200:
         send_queue.remove(data) # or use pop here instead to remove first index in queue
-    #TODO else statement for handling repeat failures to send to host
-    
+            
     return 'Data Sent to Leader'
 
 @app.route('/storedata', methods=['POST'])
