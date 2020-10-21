@@ -11,7 +11,7 @@ send_queue = []
 def index():
     return 'Server Works!'
 
-def send_hash(message):
+def send_hash(old_headers, message):
     url = "Hash endpoint url here"
     headers = {'Content-Type': 'application/json',
                'Accept': 'text/plain',
@@ -64,23 +64,22 @@ def unpack_and_send():
             processes.append(item)
 
 
-
     resources_hash = hash(resources)
     packages_hash = hash(packages)
     processes_hash = hash(processes)
 
-    if send_hash(resources_hash) == 200:
+    if send_hash(resources[0][0], resources_hash) == 200:
         resources_status = send_node_status(resources[0][0], resources)
 
-    if send_hash(packages_hash) == 200:
+    if send_hash(packages[0][0], packages_hash) == 200:
         packages_status = send_node_status(packages[0][0], packages)
 
-    if send_hash(processes_hash) == 200:
+    if send_hash(processes[0][0], processes_hash) == 200:
         processes_status = send_node_status(processes[0][0], processes)
 
     if resources_status & packages_status & processes_status == 200:
         return resources_status
-    elif
+    else:
         return "500" #TODO error code here
 
 @app.route('/sendtoleader', methods=['POST'])
@@ -90,7 +89,7 @@ def leader_send():
 
     data = send_queue(0)
 
-    r = requests.post(leader_url, json=data) #TODO find a way to get leader url for endpoint
+    r = requests.post("127.0.0.1:5000", json=data) #TODO find a way to get leader url for endpoint
     if r.status_code == 200:
         send_queue.remove(data) # or use pop here instead to remove first index in queue
 
@@ -99,7 +98,6 @@ def leader_send():
 
 @app.route('/storedata', methods=['POST'])
 def information_queue():
-
     temp_request = [{
         'package_type': request.headers['package_type'],
         'auth-token': request.headers['auth-token'],
@@ -110,4 +108,7 @@ def information_queue():
     main_queue.append(temp_request)
     return 'Data Appended'
 
+if __name__ == '__main__':
+    app.debug = True
+    app.run(host = '127.0.0.1',port=5000)
 
