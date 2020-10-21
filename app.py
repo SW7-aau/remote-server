@@ -98,8 +98,8 @@ def leader_send():
 
     r = requests.post(leader_url, json=data) #TODO retrieve leader url from election guys
     if r.status_code == 200:
-        send_queue.remove(data) # or use pop here instead to remove first index in queue
-            
+        send_queue.clear()
+
     return 'Data Sent to Leader'
 
 @app.route('/storedata', methods=['POST'])
