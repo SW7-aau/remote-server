@@ -3,10 +3,14 @@ from flask import request
 import requests
 import concurrent.futures
 import hashlib
+import socket
 
 app = Flask(__name__)
+
+
 main_queue = []
 send_queue = []
+
 
 def unpack_and_send(request):
     # package_type = request.headers["package_type"]
@@ -39,10 +43,12 @@ def unpack_and_send(request):
         processes_status = send_node_status(processes[0][0], processes)
 
     if resources_status & packages_status & processes_status == 200:
-        return resources_status
-    else:
-
-        return "Failed to send to host, resend request"
+        url = request.headers['localip']
+        headers = {'Content-Type': 'application/json',
+                    'Accept': 'text/plain',
+                    'auth-token': resources[0][0]['auth-token']
+                  }
+        r = requests.post(url, json=message, headers=headers)
 
 
 
@@ -59,11 +65,11 @@ def send_hash(old_headers, message):
 def send_node_status(old_headers, message):
 
     if old_headers['package_type'] == '1':
-        url = "https://europe-west3-wide-office-262621.cloudfunctions.net/node-status"
+        url = "http://217.69.10.141:5000/node-status"
     elif old_headers['package_type'] == '2':
-        url = "https://europe-west3-wide-office-262621.cloudfunctions.net/node-network"
+        url = "http://217.69.10.141:5000/node-network"
     elif old_headers['package_type'] == '3':
-        url = "https://europe-west3-wide-office-262621.cloudfunctions.net/node-processess"
+        url = "http://217.69.10.141:5000/node-processess"
     else:
         return
 
@@ -85,7 +91,9 @@ def index():
 @app.route('/sendtohost', methods=['POST'])
 def send_data():
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        return executor.submit(unpack_and_send(request)).result() 
+        executor.submit(unpack_and_send, request)
+
+    return "ok"
 
 @app.route('/sendtoleader', methods=['POST'])
 def leader_send():
@@ -93,14 +101,20 @@ def leader_send():
         send_queue.append(main_queue)
         main_queue.clear()
 
+    headers = {
+        'localip': request.url_root + "datasent"
+    }
 
-    data = send_queue
-
-    r = requests.post(leader_url, json=data) #TODO retrieve leader url from election guys
+    r = requests.post(leader_url, json=send_queue, headers=headers) #TODO retrieve leader url from election guys
     if r.status_code == 200:
-        send_queue.clear()
+        return 'Data Sent to Leader'
+    else: 
+        return 'Something went wrong sending the data, attempt to resend it'
 
-    return 'Data Sent to Leader'
+@app.route('/datasent', methods=['POST, GET'])
+def data_sent_response():
+    send_queue.clear()
+    return 'ok'
 
 @app.route('/storedata', methods=['POST'])
 def information_queue():
@@ -108,7 +122,8 @@ def information_queue():
         'package_type': request.headers['package_type'],
         'auth-token': request.headers['auth-token'],
         'nodeid': request.headers['nodeid'],
-        'ip-address': request.headers['ip-address']
+        'ip-address': request.headers['ip-address'],
+
     }, request.form]
 
     main_queue.append(temp_request)
