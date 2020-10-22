@@ -44,6 +44,7 @@ def unpack_and_send(request):
 
     if resources_status & packages_status & processes_status == 200:
         url = request.headers['localip']
+        print("data sent response sent to " + url)
         headers = {'Content-Type': 'application/json',
                     'Accept': 'text/plain',
                     'auth-token': resources[0][0]['auth-token']
