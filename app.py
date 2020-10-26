@@ -121,7 +121,7 @@ def send_hash(old_headers, message):
     url = "http://217.69.10.141:5000/node-hash" #node hash url
     headers = {'Content_Type': 'application/json',
                'Accept': 'text/plain',
-               'token': 'fuk'
+               'access_token': token
                }
     
     r = requests.post(url, json=message, headers=headers)
