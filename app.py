@@ -116,6 +116,7 @@ def send_hash(old_headers, message):
     :return: status_code from the request if successful, 1 if hash exists in
      database, 0 if access token has expired
     """
+    print('in here')
     url = "http://217.69.10.141:5000/node-hash" #node hash url
     headers = {'Content_Type': 'application/json',
                'Accept': 'text/plain',
