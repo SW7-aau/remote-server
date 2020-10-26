@@ -50,7 +50,8 @@ def get_auth_token(ip_address):
 
     r = requests.post(url=url, data=token_data, headers=token_headers)
 
-    token = r.json()['access_token']
+    tmp = r.json()['access_token']
+    token = f'Bearer {tmp}'
 
 
 def unpack_and_send(queue):
