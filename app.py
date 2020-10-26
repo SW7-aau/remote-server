@@ -74,6 +74,7 @@ def unpack_and_send(queue):
         elif item[0]['package_type'] == '3':
             processes.append(item)
 
+    get_auth_token('fak')
     b64 = base64.encodebytes(json.dumps(resources).encode())
     hashed_resources = hashlib.sha256(b64).hexdigest()
 
