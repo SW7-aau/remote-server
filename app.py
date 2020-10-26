@@ -46,7 +46,7 @@ def get_auth_token(ip_address):
         'ip_address': ip_address,
         'package_type': '1'
     }
-    url = "http://172.17.0.8:5000/token"
+    url = "http://217.69.10.141:5000/token"
 
     r = requests.post(url=url, data=token_data, headers=token_headers)
 
@@ -120,7 +120,7 @@ def send_hash(old_headers, message):
     url = "http://217.69.10.141:5000/node-hash" #node hash url
     headers = {'Content_Type': 'application/json',
                'Accept': 'text/plain',
-               'access_token': 'fuk'
+               'token': 'fuk'
                }
     
     r = requests.post(url, json=message, headers=headers)
