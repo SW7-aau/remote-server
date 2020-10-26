@@ -6,6 +6,7 @@ import requests
 import concurrent.futures
 import hashlib
 import base64
+import json
 
 app = Flask(__name__)
 
@@ -73,13 +74,13 @@ def unpack_and_send(queue):
         elif item[0]['package_type'] == '3':
             processes.append(item)
 
-    b64 = base64.encodebytes(resources.encode())
+    b64 = base64.encodebytes(json.dumps(resources).encode())
     hashed_resources = hashlib.sha256(b64).hexdigest()
 
-    b64 = base64.encodebytes(packages.encode())
+    b64 = base64.encodebytes(json.dumps(packages).encode())
     hashed_packages = hashlib.sha256(b64).hexdigest()
 
-    b64 = base64.encodebytes(processes.encode())
+    b64 = base64.encodebytes(json.dumps(processes).encode())
     hashed_processess = hashlib.sha256(b64).hexdigest()
 
     resources_hash_status = send_hash(resources[0][0], hashed_resources)
