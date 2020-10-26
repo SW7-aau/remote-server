@@ -45,7 +45,7 @@ def get_auth_token(ip_address):
         'ip_address': ip_address,
         'package_type': '1'
     }
-    url = "http://127.0.0.1:5000/token"
+    url = "http://172.17.0.8:5000/token"
 
     r = requests.post(url=url, data=token_data, headers=token_headers)
 
@@ -73,11 +73,21 @@ def unpack_and_send(queue):
         elif item[0]['package_type'] == '3':
             processes.append(item)
 
-    resources_hash_status = send_hash(resources[0][0], hashlib.sha256(resources).hexdigest())
-    packages_hash_status = send_hash(packages[0][0], hashlib.sha256(packages).hexdigest())
-    processes_hash_status = send_hash(processes[0][0], hashlib.sha256(processes).hexdigest())
+    b64 = base64.encodebytes(resources)
+    hashed_resources = hashlib.sha256(b64).hexdigest()
+
+    b64 = base64.encodebytes(packages)
+    hashed_packages = hashlib.sha256(b64).hexdigest()
+
+    b64 = base64.encodebytes(processes)
+    hashed_processess = hashlib.sha256(b64).hexdigest()
+
+    resources_hash_status = send_hash(resources[0][0], hashed_resources)
+    packages_hash_status = send_hash(packages[0][0], hashed_packages)
+    processes_hash_status = send_hash(processes[0][0], hashed_processess)
+    
     if resources_hash_status == 200:
-        resources_status = send_node_status(resources[0][0], resources[0])
+        resources_status = send_node_status(resources[0][0], resources)
 
     if packages_hash_status == 200:
         packages_status = send_node_status(packages[0][0], packages)
@@ -194,7 +204,7 @@ def leader_send():
     headers = {
         'local_ip_address': request.url_root + "datasent"
     }
-    leader_url = 'http://127.0.0.1:5001/storeleaderdata'
+    leader_url = 'http://172.17.0.9:5000/storeleaderdata'
     r = requests.post(leader_url, json=send_queue[0], headers=headers)  # TODO retrieve leader url from election guys
     if r.status_code == 200:
         return 'Data Sent to Leader'
@@ -208,7 +218,7 @@ def data_sent_response():
     Endpoint to tell follower data is sent to GCP, and can be deleted locally
     :return: "ok" if deleted, "Not leader" if called from follower node
     """
-    if request.headers['leader_ip_address'] == 'http://127.0.0.1:5001/':  # TODO retrieve leader url from election guys
+    if request.headers['leader_ip_address'] == 'http://172.17.0.9:5000/':  # TODO retrieve leader url from election guys
         send_queue.clear()
         json_object = {'message': 'ok'}
     else:

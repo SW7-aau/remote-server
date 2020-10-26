@@ -36,7 +36,7 @@ def get_resources():
 
 
 def send_node_status(json_object):
-    url = "http://127.0.0.1:5000/storedata"
+    url = "http://172.17.0.8:5000/storedata"
     headers = {'Content-type': 'application/json',
                'Accept': 'text/plain',
                'package_type': '1',
