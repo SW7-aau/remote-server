@@ -80,7 +80,7 @@ def unpack_and_send(queue):
         b64 = base64.encodebytes(json.dumps(resources).encode())
         hashed_resources = hashlib.sha256(b64).hexdigest()
         resources_hash_status = send_hash(resources[0][0], hashed_resources)
-        
+
     if packages:
         b64 = base64.encodebytes(json.dumps(packages).encode())
         hashed_packages = hashlib.sha256(b64).hexdigest()
@@ -145,7 +145,7 @@ def send_node_status(old_headers, message):
     :return: status_code from the request
     """
     if old_headers['package_type'] == '1':
-        url = "http://217.69.10.141:5000/node-status"
+        url = "http://217.69.10.141:5000/node-resources"
     elif old_headers['package_type'] == '2':
         url = "http://217.69.10.141:5000/node-network"
     elif old_headers['package_type'] == '3':
