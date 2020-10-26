@@ -76,19 +76,20 @@ def unpack_and_send(queue):
             processes.append(item)
 
     get_auth_token('fak')
-    b64 = base64.encodebytes(json.dumps(resources).encode())
-    hashed_resources = hashlib.sha256(b64).hexdigest()
+    if resources:
+        b64 = base64.encodebytes(json.dumps(resources).encode())
+        hashed_resources = hashlib.sha256(b64).hexdigest()
+        resources_hash_status = send_hash(resources[0][0], hashed_resources)
+        
+    if packages:
+        b64 = base64.encodebytes(json.dumps(packages).encode())
+        hashed_packages = hashlib.sha256(b64).hexdigest()
+        packages_hash_status = send_hash(packages[0][0], hashed_packages)
 
-    b64 = base64.encodebytes(json.dumps(packages).encode())
-    hashed_packages = hashlib.sha256(b64).hexdigest()
-
-    b64 = base64.encodebytes(json.dumps(processes).encode())
-    hashed_processess = hashlib.sha256(b64).hexdigest()
-
-    print(str(hashed_resources))
-    resources_hash_status = send_hash(resources[0][0], hashed_resources)
-    packages_hash_status = send_hash(packages[0][0], hashed_packages)
-    processes_hash_status = send_hash(processes[0][0], hashed_processess)
+    if processes:
+        b64 = base64.encodebytes(json.dumps(processes).encode())
+        hashed_processess = hashlib.sha256(b64).hexdigest()
+        processes_hash_status = send_hash(processes[0][0], hashed_processess)
 
     if resources_hash_status == 200:
         resources_status = send_node_status(resources[0][0], resources)
