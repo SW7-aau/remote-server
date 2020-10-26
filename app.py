@@ -83,6 +83,7 @@ def unpack_and_send(queue):
     b64 = base64.encodebytes(json.dumps(processes).encode())
     hashed_processess = hashlib.sha256(b64).hexdigest()
 
+    print(str(hashed_resources))
     resources_hash_status = send_hash(resources[0][0], hashed_resources)
     packages_hash_status = send_hash(packages[0][0], hashed_packages)
     processes_hash_status = send_hash(processes[0][0], hashed_processess)
