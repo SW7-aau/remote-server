@@ -1,11 +1,13 @@
 from copy import deepcopy
 from flask import Flask
 from flask import request
+from raft import raft
 import requests
 import concurrent.futures
 import hashlib
 import base64
 import json
+import argparse
 
 app = Flask(__name__)
 
@@ -15,6 +17,21 @@ leader_queue = []
 client_secret = '506c8044e28cbc71e989a1d9885d0e'
 client_id = '6e9fe75e4263ee84a4cadc1674182f'
 global token
+
+
+def arg_parsing():
+    parser = argparse.ArgumentParser(prog='Read Packets',
+                                     description='Read Network Packets')
+    parser.add_argument('-i', '--ip-address',
+                        help='IP Address of the current node.')
+    parser.add_argument('-c', '--cluster-id', type=int,
+                        help='ID of the cluster the current node is in.')
+    parser.add_argument('-p', '--port', type=int,
+                        help='The port the current node is using.')
+    parser.add_argument('-v', '--verbosity', type=int, default=1,
+                        help='Increase output verbosity.')
+
+    return parser.parse_args()
 
 
 # Leader functions
@@ -50,6 +67,23 @@ def get_auth_token(ip_address):
 
     tmp = r.json()['access_token']
     token = f'Bearer {tmp}'
+
+
+def check_headers(headers):
+    if headers['term'] < node.term:
+        return False
+    if node.status == 'Leader':
+        return True
+    if ((headers['status'] == 'Leader' and headers['term'] >= node.term) or
+            (headers['status'] == 'Candidate' and headers['term'] > node.term)):
+        node.become_follower()
+    if headers['term'] > node.term:
+        if node.verbosity == 1:
+            print(node.ip, ' were ', node.status,
+                  ' and had lower term limit than sender and became follower.')
+            node.update_term(headers['term'])
+
+    return True
 
 
 def unpack_and_send(queue):
@@ -207,20 +241,26 @@ def leader_send():
     Copies main_queue to send_queue and sends it to Leader
     :return: If data is sent to leader
     """
-    if not send_queue:
-        send_queue.append(deepcopy(main_queue))
-        main_queue.clear()
+    if check_headers(request.headers):
+        if node.verbosity == 1:
+            print('Heartbeat')
+        node.set_timer()
 
-    headers = {
-        'local_ip_address': request.url_root + "datasent"
-    }
-    leader_url = 'http://172.17.0.9:5000/storeleaderdata'
-    r = requests.post(leader_url, json=send_queue[0],
-                      headers=headers)  # TODO retrieve leader url from election guys
-    if r.status_code == 200:
-        return 'Data Sent to Leader'
-    else:
-        return 'Something went wrong sending the data, attempt to resend it'
+        if not send_queue:
+            send_queue.append(deepcopy(main_queue))
+            main_queue.clear()
+
+        headers = {
+            'local_ip_address': request.url_root + "datasent"
+        }
+        leader_url = 'http://172.17.0.9:5000/storeleaderdata'
+        # TODO retrieve leader url from election guys
+        r = requests.post(leader_url, json=send_queue[0],
+                          headers=headers)
+        if r.status_code == 200:
+            return 'Data Sent to Leader'
+        else:
+            return 'Something went wrong sending the data, attempt to resend it'
 
 
 @app.route('/datasent', methods=['GET'])
@@ -229,7 +269,8 @@ def data_sent_response():
     Endpoint to tell follower data is sent to GCP, and can be deleted locally
     :return: "ok" if deleted, "Not leader" if called from follower node
     """
-    if request.headers['leader_ip_address'] == 'http://172.17.0.9:5000/':  # TODO retrieve leader url from election guys
+    # TODO retrieve leader url from election guys
+    if request.headers['leader_ip_address'] == 'http://172.17.0.9:5000/':
         send_queue.clear()
         json_object = {'message': 'ok'}
     else:
@@ -254,6 +295,27 @@ def information_queue():
     return 'Data Appended'
 
 
+# Voting function
+@app.route('/requestvote', methods=['GET'])
+def request_vote():
+    if node.verbosity == 1:
+        print('Vote request received')
+    if check_headers(request.headers):
+        if node.voted == False and node.status == 'Follower':
+            node.voted = True
+            node.set_timer()
+            return '1'
+    return '0'
+
+
 if __name__ == '__main__':
-    app.debug = True
-    app.run(host='127.0.0.1', port=5002)
+    args = arg_parsing()
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        if args.verbosity == 1:
+            print('Initializing Node')
+        node = raft.Node(executor, args)
+        executor.submit(node.timer)
+        if args.verbosity == 1:
+            print('Initializing done')
+        app.debug = False
+        app.run(host=node.ip, port=node.port)
