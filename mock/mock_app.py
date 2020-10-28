@@ -33,7 +33,7 @@ def send_node_status(old_headers, message):
                'auth-token': old_headers['auth-token'],
                'nodeid': old_headers['nodeid'],
                'ip-address': old_headers['ip-address']}
-    r = Requests.post(url, json=message, headers=headers)
+    r = Requests.post(url=url, json=message, headers=headers)
     return r.status_code
 
 
