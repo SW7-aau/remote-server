@@ -1,10 +1,12 @@
 import time
 import psutil
-import mock_requests
+from mock import mock_requests
 
-class read_processes():
+
+class ReadProcesses:
     processes_dict_list = []
-    requests = mock_requests.requests()
+    requests = mock_requests.Requests()
+
     def get_processes(self):
         timestamp = str(time.time()).split('.')[0]
         for proc in psutil.process_iter():
@@ -17,14 +19,13 @@ class read_processes():
                     psutil.ZombieProcess):
                 pass
 
-
     def send_node_status(self, json_object):
         url = "http://127.0.0.1:5000/sendtohost"
         headers = {'Content-type': 'application/json',
-                'Accept': 'text/plain',
-                'auth-token': 'testtoken',
-                'package_type': '3',
-                'nodeid': 'testid',
-                'ip-address': "127.0.0.1"}
+                   'Accept': 'text/plain',
+                   'auth-token': 'testtoken',
+                   'package_type': '3',
+                   'nodeid': 'testid',
+                   'ip-address': "127.0.0.1"}
         r = self.requests.post(url, json=json_object, headers=headers)
         return r.status_code

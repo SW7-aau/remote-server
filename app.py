@@ -9,7 +9,6 @@ import json
 
 app = Flask(__name__)
 
-
 main_queue = []
 send_queue = []
 leader_queue = []
@@ -62,6 +61,9 @@ def unpack_and_send(queue):
     resources_status = 0
     packages_status = 0
     processes_status = 0
+    resources_hash_status = 0
+    packages_hash_status = 0
+    processes_hash_status = 0
     resources = []
     packages = []
     processes = []
@@ -87,8 +89,8 @@ def unpack_and_send(queue):
 
     if processes:
         b64 = base64.encodebytes(json.dumps(processes).encode())
-        hashed_processess = hashlib.sha256(b64).hexdigest()
-        processes_hash_status = send_hash(processes[0][0], hashed_processess)
+        hashed_processes = hashlib.sha256(b64).hexdigest()
+        processes_hash_status = send_hash(processes[0][0], hashed_processes)
 
     if resources_hash_status == 200:
         resources_status = send_node_status(resources[0][0], resources)
@@ -99,7 +101,8 @@ def unpack_and_send(queue):
     if processes_hash_status == 200:
         processes_status = send_node_status(processes[0][0], processes)
 
-    if (resources_status & packages_status & processes_status == 200) | (resources_hash_status & packages_hash_status & processes_hash_status == 1):
+    if (resources_status & packages_status & processes_status == 200) | (
+            resources_hash_status & packages_hash_status & processes_hash_status == 1):
         url = request.headers['local_ip_address']
         print("data sent response sent to " + url)
         headers = {'leader_ip_address': request.url_root}
@@ -119,12 +122,12 @@ def send_hash(old_headers, message):
      database, 0 if access token has expired
     """
     print('in here')
-    url = "http://217.69.10.141:5000/node-hash" #node hash url
+    url = "http://217.69.10.141:5000/node-hash"  # node hash url
     headers = {'Content_Type': 'application/json',
                'Accept': 'text/plain',
                'access_token': token
                }
-    
+
     r = requests.post(url, json=message, headers=headers)
     print(r.json())
     if r.json()['message'] == 'ok':
@@ -134,6 +137,7 @@ def send_hash(old_headers, message):
         return 0
     elif r.json()['message'] == 'hash_exists':
         return 1
+
 
 def send_node_status(old_headers, message):
     """
@@ -211,10 +215,11 @@ def leader_send():
         'local_ip_address': request.url_root + "datasent"
     }
     leader_url = 'http://172.17.0.9:5000/storeleaderdata'
-    r = requests.post(leader_url, json=send_queue[0], headers=headers)  # TODO retrieve leader url from election guys
+    r = requests.post(leader_url, json=send_queue[0],
+                      headers=headers)  # TODO retrieve leader url from election guys
     if r.status_code == 200:
         return 'Data Sent to Leader'
-    else: 
+    else:
         return 'Something went wrong sending the data, attempt to resend it'
 
 
@@ -248,7 +253,7 @@ def information_queue():
     main_queue.append(temp_request)
     return 'Data Appended'
 
+
 if __name__ == '__main__':
     app.debug = True
     app.run(host='127.0.0.1', port=5002)
-
