@@ -1,47 +1,46 @@
 import mock_requests
 
-
 def ip_to_dict(packet, protocol):
-    d = {'timestamp': packet.sniff_timestamp.split('.')[0],
-         'protocol': packet.transport_layer, 'size': str(packet.length),
-         'info': {}}
-    if str(protocol) == '2':  # Protocol = IGMP
-        d['info']['dst'] = str(packet[1].dst)
-        d['info']['dst_resolved'] = str(packet[0].addr_oui_resolved)
-        d['info']['src'] = str(packet[1].src)
-        d['info']['src_resolved'] = str(packet[0].src_oui_resolved)
-        d['info']['layer'] = packet[2].layer_name
-    else:
-        d['info']['dst'] = str(packet[1].dst)
-        d['info']['dst_resolved'] = str(packet[0].addr_oui_resolved)
-        d['info']['dst_port'] = packet[2].dstport
-        d['info']['src'] = str(packet[1].src)
-        d['info']['src_resolved'] = str(packet[0].src_oui_resolved)
-        d['info']['src_port'] = packet[2].srcport
-        if protocol == '17':  # Protocol = UPD  ---- Else TCP
-            d['info']['layer'] = packet[3].layer_name
-    return d
+        d = {'timestamp': packet.sniff_timestamp.split('.')[0],
+            'protocol': packet.transport_layer, 'size': str(packet.length),
+            'info': {}}
+        if str(protocol) == '2':  # Protocol = IGMP
+            d['info']['dst'] = str(packet[1].dst)
+            d['info']['dst_resolved'] = str(packet[0].addr_oui_resolved)
+            d['info']['src'] = str(packet[1].src)
+            d['info']['src_resolved'] = str(packet[0].src_oui_resolved)
+            d['info']['layer'] = packet[2].layer_name
+        else:
+            d['info']['dst'] = str(packet[1].dst)
+            d['info']['dst_resolved'] = str(packet[0].addr_oui_resolved)
+            d['info']['dst_port'] = packet[2].dstport
+            d['info']['src'] = str(packet[1].src)
+            d['info']['src_resolved'] = str(packet[0].src_oui_resolved)
+            d['info']['src_port'] = packet[2].srcport
+            if protocol == '17':  # Protocol = UPD  ---- Else TCP
+                d['info']['layer'] = packet[3].layer_name
+        return d
 
-
-class ReadPackets:
+class read_packets():
     packets_dict_list = []
-    requests = mock_requests.Requests()
+    requests = mock_requests.requests()
 
-    def other_to_dict(self, packet, layer_name):
+    def other_to_dict(packet, layer_name):
         d = {}
         if layer_name == 'llc':  # Protocol = STP
             d = {'timestamp': packet.sniff_timestamp.split('.')[0],
-                 'protocol': packet[2].layer_name.upper(),
-                 'size': str(packet.length), 'info': {}}
+                'protocol': packet[2].layer_name.upper(),
+                'size': str(packet.length), 'info': {}}
         elif layer_name == 'arp' or layer_name == 'eapol':  # Protocol = ARP or EAPOL
             d = {'timestamp': packet.sniff_timestamp.split('.')[0],
-                 'protocol': packet[1].layer_name.upper(),
-                 'size': str(packet.length), 'info': {}}
+                'protocol': packet[1].layer_name.upper(),
+                'size': str(packet.length), 'info': {}}
 
         d['info']['dst_resolved'] = str(packet[0].addr_oui_resolved)
         d['info']['src_resolved'] = str(packet[0].src_oui_resolved)
 
         return d
+
 
     def get_packets(self, packet, verbosity):
         d = {}
@@ -82,11 +81,11 @@ class ReadPackets:
     def send_node_status(self, json_object):
         url = "http://127.0.0.1:5000/sendtohost"
         headers = {'Content-type': 'application/json',
-                   'Accept': 'text/plain',
-                   'auth-token': 'testtoken',
-                   'package_type': '2',
-                   'nodeid': 'testid',
-                   'ip-address': "127.0.0.1"}
+                'Accept': 'text/plain',
+                'auth-token': 'testtoken',
+                'package_type': '2',
+                'nodeid': 'testid',
+                'ip-address': "127.0.0.1"}
         print(json_object)
         r = self.requests.post(url, json=json_object, headers=headers)
         return r.status_code

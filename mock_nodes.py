@@ -1,7 +1,6 @@
 from datetime import datetime
 
-
-# Check if legal shit is passed using try-catch
+#Check if legal shit is passed using try-catch
 def node_resources(message):
     try:
         for i in message:
@@ -9,12 +8,11 @@ def node_resources(message):
             cpu_percent = i['CPU%']
             ram_percent = i['RAM%']
             print("timestamp : " + str(timestamp) +
-                  "cpu : " + str(cpu_percent) +
-                  "ram : " + str(ram_percent))
+                    "cpu : " + str(cpu_percent) +
+                    "ram : " + str(ram_percent))
         return 200
     except KeyError:
         return 500
-
 
 def node_network(message):
     try:
@@ -24,9 +22,9 @@ def node_network(message):
             size = i['size']
             info = i['info']
             print("protocol : " + str(protocol) +
-                  "timestamp : " + str(timestamp) +
-                  "size : " + str(size) +
-                  "info : " + str(info))
+                    "timestamp : " + str(timestamp) +
+                    "size : " + str(size) +
+                    "info : " + str(info))
         return 200
     except KeyError:
         return 500

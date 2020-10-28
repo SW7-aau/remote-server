@@ -1,21 +1,17 @@
 import mock_nodes
 
-
-class Requests:
+class requests():
     def post(self, url, json, headers):
-        if url == "http://217.69.10.141:5000/node-resources":
+        if(url == "http://217.69.10.141:5000/node-resources"):
             return self.Response(mock_nodes.node_resources(message=json))
-        if url == "http://217.69.10.141:5000/node-network":
+        if(url == "http://217.69.10.141:5000/node-network"):
             return self.Response(mock_nodes.node_network(json))
-
-    class Response:
+    class Response():
         def __init__(self, status_code):
             self.status_code = status_code
 
-
 def index():
     return 'Server Works!'
-
 
 def send_node_status(old_headers, message):
     if old_headers['package_type'] == '1':
@@ -33,12 +29,17 @@ def send_node_status(old_headers, message):
                'auth-token': old_headers['auth-token'],
                'nodeid': old_headers['nodeid'],
                'ip-address': old_headers['ip-address']}
-    r = Requests.post(url=url, json=message, headers=headers)
+    r = requests.post(url, json=message, headers=headers)
     return r.status_code
 
 
 def say_hello(headers, json):
+    # package_type = request.headers["package_type"]
+    # from_node = request.headers["nodeid"]
+    # from_ip = request.headers["ip-address"]
+    # token = request.headers["auth-token"]
+    # message = request.get_json()
+
     return send_node_status(headers, json)
 
-
-requests = Requests()
+requests = requests()
