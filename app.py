@@ -1,5 +1,4 @@
 from copy import deepcopy
-
 from flask import Flask
 from flask import request
 import requests
@@ -136,7 +135,6 @@ def send_hash(old_headers, message):
     elif r.json()['message'] == 'hash_exists':
         return 1
 
-
 def send_node_status(old_headers, message):
     """
     Sends the send_queue to GCP
@@ -150,6 +148,7 @@ def send_node_status(old_headers, message):
         url = "http://217.69.10.141:5000/node-network"
     elif old_headers['package_type'] == '3':
         url = "http://217.69.10.141:5000/node-processess"
+
     else:
         return
 
@@ -248,7 +247,6 @@ def information_queue():
 
     main_queue.append(temp_request)
     return 'Data Appended'
-
 
 if __name__ == '__main__':
     app.debug = True

@@ -10,7 +10,7 @@ import cyclic_executive
 ip_address = requests.get('https://api.ipify.org').text
 resources_dict_list = []
 
-
+#Scheduler options
 def arg_parsing():
     parser = argparse.ArgumentParser(prog='Read Resources',
                                      description='Read current resource usage.')
@@ -24,7 +24,7 @@ def arg_parsing():
 
     return parser.parse_args()
 
-
+#Reads the resource stats of the machine this application is running on.
 def get_resources():
     timestamp = str(time.time()).split('.')[0]
     status_struct = {'timestamp': timestamp,
@@ -34,7 +34,7 @@ def get_resources():
     print(status_struct)
     resources_dict_list.append(status_struct)
 
-
+#Sends current recorded metrics to sidecar (I hope)
 def send_node_status(json_object):
     url = "http://172.17.0.8:5000/storedata"
     headers = {'Content-type': 'application/json',
@@ -45,7 +45,7 @@ def send_node_status(json_object):
     r = requests.post(url, json=json_object, headers=headers)
     print(r.status_code)
 
-
+#Clears batch of metric reading after calling send_node_status
 def send_resources_list():
     send_node_status(resources_dict_list)
     resources_dict_list.clear()
@@ -62,5 +62,6 @@ if __name__ == '__main__':
                                               send_frequency=args.send_frequency,
                                               functions=functions)
 
+    #Why do we have an infinite while loop here when the scheduler already has one?
     while True:
         cyclic.run()

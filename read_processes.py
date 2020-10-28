@@ -1,3 +1,6 @@
+#Reads the states of processes on the machine.
+#See read_resources.py for structural documentation.
+
 import time
 import psutil
 import requests
