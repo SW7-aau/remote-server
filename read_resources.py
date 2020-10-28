@@ -36,10 +36,9 @@ def get_resources():
 
 #Sends current recorded metrics to sidecar (I hope)
 def send_node_status(json_object):
-    url = "http://127.0.0.1:5000/sendtohost"
+    url = "http://172.17.0.8:5000/storedata"
     headers = {'Content-type': 'application/json',
                'Accept': 'text/plain',
-               'auth-token': 'testtoken',
                'package_type': '1',
                'nodeid': 'testid',
                'ip-address': str(ip_address)}

@@ -42,10 +42,9 @@ def get_processes():
 
 
 def send_node_status(json_object):
-    url = "http://127.0.0.1:5000/sendtohost"
+    url = "http://127.0.0.1:5000/storedata"
     headers = {'Content-type': 'application/json',
                'Accept': 'text/plain',
-               'auth-token': 'testtoken',
                'package_type': '3',
                'nodeid': 'testid',
                'ip-address': str(ip_address)}
