@@ -14,7 +14,7 @@ jobs:
       - store_test_results:
           path: output/scan
       - run:
-          command: python3 unit_tests.py
+          command: python3 test/unit_tests.py
           name: Test
 
 workflows:
