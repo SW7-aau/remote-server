@@ -1,6 +1,6 @@
 import time
 import psutil
-from mock import mock_requests
+import mock_requests
 
 
 class ReadProcesses:

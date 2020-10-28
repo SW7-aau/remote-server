@@ -1,4 +1,4 @@
-from mock import mock_app
+import mock_app
 
 
 class Requests:

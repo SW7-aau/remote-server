@@ -1,4 +1,4 @@
-from mock import mock_nodes
+import mock_nodes
 
 
 class Requests:

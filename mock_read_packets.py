@@ -1,4 +1,4 @@
-from mock import mock_requests
+import mock_requests
 
 
 def ip_to_dict(packet, protocol):

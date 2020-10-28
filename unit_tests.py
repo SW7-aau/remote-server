@@ -1,6 +1,8 @@
 import unittest
 import time
-from mock import mock_read_resources
+import mock_read_resources
+
+
 # import mock_read_process
 # import mock_read_packets
 
