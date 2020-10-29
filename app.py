@@ -314,7 +314,7 @@ if __name__ == '__main__':
     with concurrent.futures.ThreadPoolExecutor() as executor:
         if args.verbosity == 1:
             print('Initializing Node')
-        os.system("python3 read/read_resources.py -i "+args.ip_address+" -p "+args.port+" &")
+        os.system("python3 read/read_resources.py -i "+args.ip_address+" -p "+str(args.port)+" &")
         node = raft.Node(executor, args)
         executor.submit(node.timer)
         if args.verbosity == 1:
