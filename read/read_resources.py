@@ -3,8 +3,8 @@ import psutil
 import requests
 import argparse
 import sys
-
-from scheduler import cyclic_executive
+sys.path.insert(1, 'scheduler')
+import cyclic_executive
 
 ip_address = requests.get('https://api.ipify.org').text
 resources_dict_list = []

@@ -1,7 +1,8 @@
 import argparse
 import pyshark
 import requests
-
+sys.path.insert(1, 'scheduler')
+import cyclic_executive
 
 ip_address = requests.get('https://api.ipify.org').text
 packets_dict_list = []
