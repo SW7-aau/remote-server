@@ -252,7 +252,7 @@ def leader_send():
             main_queue.clear()
 
         headers = {
-            'local_ip_address':'http://'+node.ip+':5000/datasent'
+            'local_ip_address': request.url_root + "datasent"
         }
         leader_url = 'http://'+ request.remote_addr +':5000/storeleaderdata'
         # TODO retrieve leader url from election guys
