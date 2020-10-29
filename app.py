@@ -71,18 +71,18 @@ def get_auth_token(ip_address):
 
 
 def check_headers(headers):
-    if headers['term'] < node.term:
+    if int(headers['term']) < node.term:
         return False
     if node.status == 'Leader':
         return True
-    if ((headers['status'] == 'Leader' and headers['term'] >= node.term) or
-            (headers['status'] == 'Candidate' and headers['term'] > node.term)):
+    if ((headers['status'] == 'Leader' and int(headers['term']) >= node.term) or
+            (headers['status'] == 'Candidate' and int(headers['term']) > node.term)):
         node.become_follower()
-    if headers['term'] > node.term:
+    if int(headers['term']) > node.term:
         if node.verbosity == 1:
             print(node.ip, ' were ', node.status,
                   ' and had lower term limit than sender and became follower.')
-            node.update_term(headers['term'])
+            node.update_term(int(headers['term']))
 
     return True
 
