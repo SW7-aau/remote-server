@@ -38,7 +38,7 @@ def get_resources():
 
 
 def send_node_status(json_object):
-    url = "http://"+ args.ip_address +":"+args.port+"/storedata"
+    url = "http://"+ str(args.ip_address) +":"+str(args.port)+"/storedata"
     headers = {'Content-type': 'application/json',
                'Accept': 'text/plain',
                'package_type': '1',
