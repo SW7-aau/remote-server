@@ -20,7 +20,10 @@ def arg_parsing():
                              'before sent.')
     parser.add_argument('-v', '--verbosity', action='count', default=1,
                         help='Increase output verbosity.')
-
+    parser.add_argument('-i', '--ip-address',
+                        help='IP Adress of the current node.')
+    parser.add_argument('-p', '--port', type=int,
+                        help='The port the current node is using.')
     return parser.parse_args()
 
 
@@ -35,7 +38,7 @@ def get_resources():
 
 
 def send_node_status(json_object):
-    url = "http://172.17.0.8:5000/storedata"
+    url = "http://"+ args.ip_address +":"+args.port+"/storedata"
     headers = {'Content-type': 'application/json',
                'Accept': 'text/plain',
                'package_type': '1',

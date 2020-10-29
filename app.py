@@ -8,6 +8,7 @@ import hashlib
 import base64
 import json
 import argparse
+import os
 
 app = Flask(__name__)
 
@@ -23,7 +24,7 @@ def arg_parsing():
     parser = argparse.ArgumentParser(prog='Read Packets',
                                      description='Read Network Packets')
     parser.add_argument('-i', '--ip-address',
-                        help='IP Address of the current node.')
+                        help='IP Adress of the current node.')
     parser.add_argument('-c', '--cluster-id', type=int,
                         help='ID of the cluster the current node is in.')
     parser.add_argument('-p', '--port', type=int,
@@ -313,6 +314,7 @@ if __name__ == '__main__':
     with concurrent.futures.ThreadPoolExecutor() as executor:
         if args.verbosity == 1:
             print('Initializing Node')
+        os.system("python3 read/read_resources.py -i "+args.ip_address+" -p "+args.port+" &")
         node = raft.Node(executor, args)
         executor.submit(node.timer)
         if args.verbosity == 1:
