@@ -85,6 +85,8 @@ class Node:
         """
         Sets timer and status as follower
         """
+        if self.verbosity == 2:
+            print(str(self.ip), ' became Follower')
         self.set_timer()
         self.status = "Follower"
         # print(str(self.ip) + " became follower.")
@@ -95,8 +97,8 @@ class Node:
         Sets status as candidate, updates term, and votes for self
         Starts election
         """
-        if self.verbosity == 1:
-            print(str(self.ip), " became candidate.")
+        if self.verbosity == 2:
+            print(str(self.ip), " became Candidate.")
         self.set_timer() # Reset time so candidate reattempts election if it didnt get elected or no one else became leader in meanwhile
         self.status = "Candidate"
         self.update_term(self.term + 1)
@@ -109,8 +111,8 @@ class Node:
         Resets timer and sets status to leader
         Calls heartbeat to all followers
         """
-        if self.verbosity == 1:
-            print(str(self.ip), " became leader with ", str(self.votes), " votes.")
+        if self.verbosity == 2:
+            print(str(self.ip), " became Leader with ", str(self.votes), " votes.")
         self.set_timer()
         self.status = "Leader"
         self.heartbeat()
