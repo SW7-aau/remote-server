@@ -229,6 +229,5 @@ class Node:
         """
         if self.status == "Follower" or self.status == "Candidate":
             self.become_candidate()
-            self.set_timer()
         elif self.status == "Leader":
             self.heartbeat()
