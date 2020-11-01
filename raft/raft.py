@@ -205,9 +205,7 @@ class Node:
             self.time = time.time()
             if self.time >= self.timeout:
                 self.set_timer()
-                if self.verbosity == 1:
-                    print(self.timeout)
-                self.time_flag = True
+                #self.time_flag = True
                 self.executor.submit(self.timer_handler)
 
     def set_timer(self):
@@ -218,11 +216,11 @@ class Node:
         """
         self.time = time.time()
         if self.status == "Follower" or self.status == "Candidate":
-            self.timeout = self.time + self.rand.uniform(2, 4)
-            self.time_flag = False
+            self.timeout = self.time + self.rand.uniform(0.15, 0.3)
+            #self.time_flag = False
         elif self.status == "Leader":
-            self.timeout = self.time + 0.5
-            self.time_flag = False
+            self.timeout = self.time + 0.05
+            #self.time_flag = False
         
     def timer_handler(self):
         """
