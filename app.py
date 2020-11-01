@@ -81,6 +81,8 @@ def check_headers(headers):
         print(node.ip, ' were ', node.status,
                 ' and had lower term limit than sender and became follower.')
         node.update_term(int(headers['term']))
+    else: 
+        return False
     #if int(headers['term']) > int(node.term):
     #    if node.verbosity == 1:
 
