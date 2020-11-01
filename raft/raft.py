@@ -205,6 +205,8 @@ class Node:
             self.time = time.time()
             if self.time >= self.timeout:
                 self.set_timer()
+                if self.verbosity == 1:
+                    print(self.timeout)
                 self.time_flag = True
                 self.executor.submit(self.timer_handler)
 
