@@ -141,7 +141,7 @@ class Node:
                    'Accept': 'text/plain',
                    'nodeid': self.node,
                    'ip-address': self.ip,
-                   'term': self.term,
+                   'term': str(self.term),
                    'status': self.status}
         r = requests.get(url=follower_url, headers=headers)
         # Send result to GCP

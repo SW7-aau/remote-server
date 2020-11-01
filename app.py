@@ -78,13 +78,11 @@ def check_headers(headers):
     if ((headers['status'] == 'Leader' and int(headers['term']) >= int(node.term)) or
             (headers['status'] == 'Candidate' and int(headers['term']) > int(node.term))):
         node.become_follower()
-        print(node.ip, ' were ', node.status,
-                ' and had lower term limit than sender and became follower.')
+    if int(headers['term']) > int(node.term):
+        if node.verbosity == 1:
+            print(node.ip, ' were ', node.status,
+                    ' and had lower term limit than sender and became follower.')
         node.update_term(int(headers['term']))
-    else: 
-        return False
-    #if int(headers['term']) > int(node.term):
-    #    if node.verbosity == 1:
 
     return True
 
