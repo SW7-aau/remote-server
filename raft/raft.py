@@ -204,7 +204,7 @@ class Node:
         while True:
             self.time = time.time()
             if self.time >= self.timeout:
-            #    self.set_timer()
+                self.set_timer()
                 self.time_flag = True
                 self.executor.submit(self.timer_handler)
 
@@ -229,7 +229,5 @@ class Node:
         """
         if self.status == "Follower" or self.status == "Candidate":
             self.become_candidate()
-            self.set_timer()
         elif self.status == "Leader":
             self.heartbeat()
-            self.set_timer()
