@@ -128,13 +128,13 @@ def unpack_and_send(queue):
         processes_hash_status = send_hash(processes[0][0], hashed_processes)
 
     if resources_hash_status == 200:
-        resources_status = send_node_status(resources[0][0], resources)
+        resources_status = send_to_gcp(resources[0][0], resources)
 
     if packages_hash_status == 200:
-        packages_status = send_node_status(packages[0][0], packages)
+        packages_status = send_to_gcp(packages[0][0], packages)
 
     if processes_hash_status == 200:
-        processes_status = send_node_status(processes[0][0], processes)
+        processes_status = send_to_gcp(processes[0][0], processes)
 
     if (resources_status & packages_status & processes_status == 200) | (
             resources_hash_status & packages_hash_status & processes_hash_status == 1):
@@ -174,7 +174,7 @@ def send_hash(old_headers, message):
         return 1
 
 
-def send_node_status(old_headers, message):
+def send_to_gcp(old_headers, message):
     """
     Sends the send_queue to GCP
     :param old_headers: Headers from the send_queue
