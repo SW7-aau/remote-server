@@ -103,7 +103,7 @@ class Node:
         Starts election
         """
         if self.verbosity == 1:
-            print(str(self.ip), " became candidate.")
+            print(self.ip, " became candidate.")
         self.set_timer() # Reset time so candidate reattempts election if it didnt get elected or no one else became leader in meanwhile
         self.status = "Candidate"
         self.update_term(self.term + 1)
@@ -117,7 +117,7 @@ class Node:
         Calls heartbeat to all followers
         """
         if self.verbosity == 1:
-            print(str(self.ip), " became leader with ", str(self.votes), " votes.")
+            print(self.ip, " became leader with ", str(self.votes), " votes.")
         self.set_timer()
         self.status = "Leader"
         self.get_auth_token(self.ip)
@@ -125,7 +125,7 @@ class Node:
 
     # Misc functions
     def create_endpoint_url(self, ip, port):
-        return 'http://' + str(ip) + ':' + str(port)
+        return 'http://' + ip + ':' + port
 
     def heartbeat(self):
         """
@@ -191,7 +191,7 @@ class Node:
                 'auth-token': 'testtoken',
                 'package_type': '1',
                 'nodeid': 'testid',
-                'ip-address': str(self.ip),
+                'ip-address': self.ip,
                 'term': str(self.term),
                 'status': self.status}
 
