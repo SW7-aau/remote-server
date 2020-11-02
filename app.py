@@ -101,7 +101,7 @@ def unpack_and_send(queue):
     print(resources_hash_status)
     if (resources_status == 200) or (resources_hash_status == 1):
         print('KEKE')
-        url = queue[0][0]['ip_address'] + ':' + node.port + '/datasent'
+        url = 'http://' + queue[0][0]['ip_address'] + ':' + node.port + '/datasent'
         print("data sent response sent to " + url)
         headers = {'leader_ip_address': node.ip}
 
