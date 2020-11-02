@@ -99,8 +99,8 @@ def unpack_and_send(queue):
 
     print(resources_status)
     print(resources_hash_status)
-    if (resources_status == 200) or (
-            resources_hash_status == 1):
+    if (resources_status == 200) or (resources_hash_status == 1):
+        print('KEKE')
         url = request.headers['local_ip_address']
         print("data sent response sent to " + url)
         headers = {'leader_ip_address': request.url_root}
