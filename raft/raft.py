@@ -84,7 +84,7 @@ class Node:
         lst = []
         for n in tmp:
             #if n['ip_address'] != self.ip:
-            lst.append(self.create_endpoint_url(n['ip_address'], 5000))
+            lst.append(self.create_endpoint_url(n['ip_address'], self.port))
         self.config = lst
         print(len(self.config))
 
