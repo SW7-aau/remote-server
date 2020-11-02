@@ -75,7 +75,7 @@ def check_headers(headers):
         return False
     #if node.status == 'Leader':
     #    return True
-    if ((headers['status'] == 'Leader' and int(headers['term']) >= int(node.term)) or
+    if ((headers['status'] == 'Leader' and int(headers['term']) > int(node.term)) or
             (headers['status'] == 'Candidate' and int(headers['term']) > int(node.term))):
         node.become_follower()
     if int(headers['term']) > int(node.term):
