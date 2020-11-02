@@ -257,6 +257,7 @@ def information_queue():
     }, request.get_json()]
 
     node.main_queue.append(temp_request)
+    print(node.main_queue)
     return 'Data Appended'
 
 
