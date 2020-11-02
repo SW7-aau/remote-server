@@ -196,6 +196,7 @@ def store_leader_data():
     """
     r = request.get_json()
     node.leader_queue.append(r)
+    print(node.leader_queue)
     return 'ok'
 
 
@@ -257,7 +258,6 @@ def information_queue():
     }, request.get_json()]
 
     node.main_queue.append(temp_request)
-    print(node.main_queue)
     return 'Data Appended'
 
 
