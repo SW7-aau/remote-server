@@ -54,6 +54,7 @@ def unpack_and_send(queue):
     :param queue: A send_queue from a follower
     :return: Nothing
     """
+    print('REEEEEEEEEEEEEEEEEEEE')
     resources_status = 0
     packages_status = 0
     processes_status = 0
