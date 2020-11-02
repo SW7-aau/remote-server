@@ -195,8 +195,8 @@ def store_leader_data():
     :return: "ok"
     """
     r = request.get_json()
+    print(r)
     node.leader_queue.append(r)
-    print(node.leader_queue)
     return 'ok'
 
 
