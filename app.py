@@ -98,7 +98,7 @@ def unpack_and_send(queue):
         processes_status = send_to_gcp(processes[0][0], processes)
 
     if (resources_status & packages_status & processes_status == 200) | (
-            resources_hash_status & packages_hash_status & processes_hash_status == 1):
+            resources_hash_status == 1):
         url = request.headers['local_ip_address']
         print("data sent response sent to " + url)
         headers = {'leader_ip_address': request.url_root}
@@ -134,7 +134,7 @@ def send_hash(old_headers, message):
     elif r.json()['message'] == 'Not authorized':
         node.become_follower()
         return 0
-    elif r.json()['message'] == 'hash_exists':
+    elif r.status_code == 409:
         return 1
 
 
