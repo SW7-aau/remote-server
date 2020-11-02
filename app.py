@@ -28,22 +28,18 @@ def arg_parsing():
     return parser.parse_args()
 
 
-
-
-
 def check_headers(headers):
     if int(headers['term']) < int(node.term):
         return False
-    #if node.status == 'Leader':
-    #    return True
     if int(headers['term']) > int(node.term):
         if node.verbosity == 1:
             print(node.ip, ' were ', node.status,
-                    ' and had lower term limit than sender and became follower.')
+                  ' and had lower term limit'
+                  ' than sender and became follower.')
         node.become_follower()
         node.update_term(int(headers['term']))
-    if (headers['status'] == 'Leader'):
-        node.leader_ip = headers['ip-address']
+    if headers['status'] == 'Leader':
+        node.leader_ip = headers['ip_address']
 
     return True
 
@@ -72,7 +68,6 @@ def unpack_and_send(queue):
         elif item[0]['package_type'] == '3':
             processes.append(item)
 
-    print(queue)
     if resources:
         b64 = base64.encodebytes(json.dumps(resources).encode())
         hashed_resources = hashlib.sha256(b64).hexdigest()
@@ -97,10 +92,7 @@ def unpack_and_send(queue):
     if processes_hash_status == 200:
         processes_status = send_to_gcp(processes[0][0], processes)
 
-    print("------------------------------------" + str(resources_status) + "-----------------------------------------") # giver 0
-    print(resources_hash_status)
     if (resources_status == 200) or (resources_hash_status == 1):
-        print('KEKE')
         url = 'http://' + queue[0][0]['ip_address'] + ':' + node.port + '/datasent'
         print("data sent response sent to " + url)
         headers = {'leader_ip_address': node.ip}
@@ -119,7 +111,7 @@ def send_hash(old_headers, message):
     :return: status_code from the request if successful, 1 if hash exists in
      database, 0 if access token has expired
     """
-    print('in here')
+
     url = "http://217.69.10.141:5000/node-hash"  # node hash url
     headers = {'Content_Type': 'application/json',
                'Accept': 'text/plain',
@@ -127,7 +119,7 @@ def send_hash(old_headers, message):
                }
 
     r = requests.post(url, json=message, headers=headers)
-    print(r.status_code)
+
     if r.status_code == 409:
         return 1
     if r.json()['message'] == 'ok':
@@ -148,11 +140,11 @@ def send_to_gcp(old_headers, message):
     :return: status_code from the request
     """
     if old_headers['package_type'] == '1':
-        url = "http://217.69.10.141:5000/node-resources"
+        url = 'http://217.69.10.141:5000/node-resources'
     elif old_headers['package_type'] == '2':
-        url = "http://217.69.10.141:5000/node-network"
+        url = 'http://217.69.10.141:5000/node-network'
     elif old_headers['package_type'] == '3':
-        url = "http://217.69.10.141:5000/node-processess"
+        url = 'http://217.69.10.141:5000/node-processess'
 
     else:
         return
@@ -163,7 +155,7 @@ def send_to_gcp(old_headers, message):
                'access_token': node.token
                }
     r = requests.post(url, json=message, headers=headers)
-    print("--------------------" + r.json()['message'] + "------------------------------------")
+
     if r.json()['message'] != 'ok':
         node.get_auth_token(old_headers['ip_address'])
         return 0
@@ -181,20 +173,20 @@ def index():
 def send_data():
     """
     Calls unpack_and_send in another thread until the leader_queue is empty
-    :return: "ok"
+    :return: 'ok'
     """
     with concurrent.futures.ThreadPoolExecutor() as executor:
         while node.leader_queue:
             executor.submit(unpack_and_send, node.leader_queue.pop(0))
 
-    return "ok"
+    return 'ok'
 
 
 @app.route('/storeleaderdata', methods=['POST'])
 def store_leader_data():
     """
     Stores the send_queues from followers in a leader_queue
-    :return: "ok"
+    :return: 'ok'
     """
     r = request.get_json()
     node.leader_queue.append(r)
@@ -219,10 +211,9 @@ def leader_send():
             node.main_queue.clear()
 
         headers = {
-            'local_ip_address': request.url_root + "datasent"
+            'local_ip_address': request.url_root + 'datasent'
         }
-        leader_url = 'http://'+ request.remote_addr +':5000/storeleaderdata'
-        # TODO retrieve leader url from election guys
+        leader_url = 'http://' + node.leader_ip + ':5000/storeleaderdata'
         r = requests.post(leader_url, json=node.send_queue[0],
                           headers=headers)
         if r.status_code == 200:
@@ -237,8 +228,6 @@ def data_sent_response():
     Endpoint to tell follower data is sent to GCP, and can be deleted locally
     :return: "ok" if deleted, "Not leader" if called from follower node
     """
-    # TODO retrieve leader url from election guys
-    print('YAAAAAAAAAWN')
     if request.headers['leader_ip_address'] == node.leader_ip:
         node.send_queue.clear()
         json_object = {'message': 'ok'}
@@ -270,7 +259,7 @@ def request_vote():
     if node.verbosity == 1:
         print('Vote request received')
     if check_headers(request.headers):
-        if node.voted == False and node.status == 'Follower':
+        if node.voted is False and node.status == 'Follower':
             node.voted = True
             node.set_timer()
             return '1'
@@ -282,7 +271,7 @@ if __name__ == '__main__':
     with concurrent.futures.ThreadPoolExecutor() as executor:
         if args.verbosity == 1:
             print('Initializing Node')
-        os.system("python3 read/read_resources.py -i "+str(args.ip_address)+" -p "+str(args.port)+" &")
+        os.system("python3 read/read_resources.py -i " + str(args.ip_address) + " -p " + str(args.port) + " &")
         node = raft.Node(executor, args)
         executor.submit(node.timer)
         if args.verbosity == 1:
