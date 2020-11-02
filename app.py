@@ -255,7 +255,7 @@ def information_queue():
     """
     temp_request = [{
         'package_type': request.headers['package_type'],
-        'nodeid': node.node,
+        'nodeid': node.ip,
         'ip_address': node.ip,
 
     }, request.get_json()]
