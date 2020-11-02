@@ -12,13 +12,6 @@ import os
 
 app = Flask(__name__)
 
-main_queue = []
-send_queue = []
-leader_queue = []
-client_secret = '506c8044e28cbc71e989a1d9885d0e'
-client_id = '6e9fe75e4263ee84a4cadc1674182f'
-global token
-
 
 def arg_parsing():
     parser = argparse.ArgumentParser(prog='Read Packets',
@@ -35,39 +28,7 @@ def arg_parsing():
     return parser.parse_args()
 
 
-# Leader functions
-def get_auth_token(ip_address):
-    """
-    Used to get access token from GCP
-    :param ip_address: An IP Address used for generating access token
-    :return: Sets global token to returned access token
-    """
-    global token
-    client_creds = f'{client_id}:{client_secret}'
-    client_creds_b64 = base64.b64encode(client_creds.encode()).decode()
 
-    refresh_token = b'sw7 server monitoring'
-    refresh_token = hashlib.sha512(refresh_token).hexdigest()
-    refresh_token = f'Bearer {refresh_token}'
-
-    grant_type = 'refresh_token'
-
-    token_data = {
-        'grant_type': grant_type,
-        'refresh_token': refresh_token
-    }
-    token_headers = {
-        'Authorization': client_creds_b64,
-        'nodeid': 'test_id',
-        'ip_address': ip_address,
-        'package_type': '1'
-    }
-    url = "http://217.69.10.141:5000/token"
-
-    r = requests.post(url=url, data=token_data, headers=token_headers)
-
-    tmp = r.json()['access_token']
-    token = f'Bearer {tmp}'
 
 
 def check_headers(headers):
@@ -111,7 +72,6 @@ def unpack_and_send(queue):
         elif item[0]['package_type'] == '3':
             processes.append(item)
 
-    get_auth_token('fak')
     if resources:
         b64 = base64.encodebytes(json.dumps(resources).encode())
         hashed_resources = hashlib.sha256(b64).hexdigest()
@@ -160,7 +120,7 @@ def send_hash(old_headers, message):
     url = "http://217.69.10.141:5000/node-hash"  # node hash url
     headers = {'Content_Type': 'application/json',
                'Accept': 'text/plain',
-               'access_token': token
+               'access_token': node.token
                }
 
     r = requests.post(url, json=message, headers=headers)
@@ -168,7 +128,7 @@ def send_hash(old_headers, message):
     if r.json()['message'] == 'ok':
         return r.status_code
     elif r.json()['message'] == 'Authorization token is expired':
-        get_auth_token(old_headers['ip_address'])
+        node.get_auth_token(old_headers['ip_address'])
         return 0
     elif r.json()['message'] == 'Not authorized':
         node.become_follower()
@@ -197,12 +157,12 @@ def send_to_gcp(old_headers, message):
     print('Sent to: ', old_headers['package_type'])
     headers = {'Content_Type': 'application/json',
                'Accept': 'text/plain',
-               'access_token': token
+               'access_token': node.token
                }
     r = requests.post(url, json=message, headers=headers)
 
     if r.json()['message'] != 'ok':
-        get_auth_token(old_headers['ip_address'])
+        node.get_auth_token(old_headers['ip_address'])
         return 0
 
     return r.status_code
@@ -221,8 +181,8 @@ def send_data():
     :return: "ok"
     """
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        while leader_queue:
-            executor.submit(unpack_and_send, leader_queue.pop(0))
+        while node.leader_queue:
+            executor.submit(unpack_and_send, node.leader_queue.pop(0))
 
     return "ok"
 
@@ -234,7 +194,7 @@ def store_leader_data():
     :return: "ok"
     """
     r = request.get_json()
-    leader_queue.append(r)
+    node.leader_queue.append(r)
     return 'ok'
 
 
@@ -250,16 +210,16 @@ def leader_send():
             print('Heartbeat')
         node.set_timer()
 
-        if not send_queue:
-            send_queue.append(deepcopy(main_queue))
-            main_queue.clear()
+        if not node.send_queue:
+            node.send_queue.append(deepcopy(node.main_queue))
+            node.main_queue.clear()
 
         headers = {
             'local_ip_address': request.url_root + "datasent"
         }
         leader_url = 'http://'+ request.remote_addr +':5000/storeleaderdata'
         # TODO retrieve leader url from election guys
-        r = requests.post(leader_url, json=send_queue[0],
+        r = requests.post(leader_url, json=node.send_queue[0],
                           headers=headers)
         if r.status_code == 200:
             return 'Data Sent to Leader'
@@ -275,7 +235,7 @@ def data_sent_response():
     """
     # TODO retrieve leader url from election guys
     if request.headers['leader_ip_address'] == 'http://172.17.0.9:5000/':
-        send_queue.clear()
+        node.send_queue.clear()
         json_object = {'message': 'ok'}
     else:
         json_object = {'message': 'Not leader'}
@@ -295,7 +255,7 @@ def information_queue():
 
     }, request.get_json()]
 
-    main_queue.append(temp_request)
+    node.main_queue.append(temp_request)
     return 'Data Appended'
 
 

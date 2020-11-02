@@ -65,7 +65,12 @@ class Node:
         self.time = None
         self.timeout = 0
         self.time_flag = False
-        self.queue = [{"cpu": "50%", "ram": "20%"}]
+        self.main_queue = []
+        self.send_queue = []
+        self.leader_queue = []
+        self.client_secret = '506c8044e28cbc71e989a1d9885d0e'
+        self.client_id = '6e9fe75e4263ee84a4cadc1674182f'
+        self.token = None
         self.set_timer()
 
     # Setup functions
@@ -76,8 +81,8 @@ class Node:
         tmp = requests.get('http://217.69.10.141:5000/get-config?cluster_id=' + str(self.cluster_id)).json()
         lst = []
         for n in tmp:
-            if n['ip_address'] != self.ip:
-                lst.append(self.create_endpoint_url(n['ip_address'], 5000))
+            #if n['ip_address'] != self.ip:
+            lst.append(self.create_endpoint_url(n['ip_address'], 5000))
         self.config = lst
         print(len(self.config))
 
@@ -113,6 +118,7 @@ class Node:
             print(str(self.ip), " became leader with ", str(self.votes), " votes.")
         self.set_timer()
         self.status = "Leader"
+        self.get_auth_token(self.ip)
         self.heartbeat()
 
     # Misc functions
@@ -195,6 +201,39 @@ class Node:
         self.term = term
         self.voted = False
         self.votes = 0
+        
+    # Leader functions
+    def get_auth_token(self, ip_address):
+        """
+        Used to get access token from GCP
+        :param ip_address: An IP Address used for generating access token
+        :return: Sets global token to returned access token
+        """
+        client_creds = f'{self.client_id}:{self.client_secret}'
+        client_creds_b64 = base64.b64encode(client_creds.encode()).decode()
+
+        refresh_token = b'sw7 server monitoring'
+        refresh_token = hashlib.sha512(refresh_token).hexdigest()
+        refresh_token = f'Bearer {refresh_token}'
+
+        grant_type = 'refresh_token'
+
+        token_data = {
+            'grant_type': grant_type,
+            'refresh_token': refresh_token
+        }
+        token_headers = {
+            'Authorization': client_creds_b64,
+            'nodeid': 'test_id',
+            'ip_address': ip_address,
+            'package_type': '1'
+        }
+        url = "http://217.69.10.141:5000/token"
+
+        r = requests.post(url=url, data=token_data, headers=token_headers)
+
+        tmp = r.json()['access_token']
+        self.token = f'Bearer {tmp}'
 
     # Timer functions
     def timer(self):
