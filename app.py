@@ -54,7 +54,6 @@ def unpack_and_send(queue):
     :param queue: A send_queue from a follower
     :return: Nothing
     """
-    print('REEEEEEEEEEEEEEEEEEEE')
     resources_status = 0
     packages_status = 0
     processes_status = 0
@@ -73,6 +72,7 @@ def unpack_and_send(queue):
         elif item[0]['package_type'] == '3':
             processes.append(item)
 
+    print(queue)
     if resources:
         b64 = base64.encodebytes(json.dumps(resources).encode())
         hashed_resources = hashlib.sha256(b64).hexdigest()
