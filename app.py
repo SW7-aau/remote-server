@@ -195,7 +195,6 @@ def store_leader_data():
     :return: "ok"
     """
     r = request.get_json()
-    print(r)
     node.leader_queue.append(r)
     return 'ok'
 
@@ -214,6 +213,7 @@ def leader_send():
 
         if not node.send_queue:
             node.send_queue.append(deepcopy(node.main_queue))
+            print(node.send_queue)
             node.main_queue.clear()
 
         headers = {
