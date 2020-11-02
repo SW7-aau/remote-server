@@ -36,14 +36,14 @@ def check_headers(headers):
         return False
     #if node.status == 'Leader':
     #    return True
-    if ((headers['status'] == 'Leader' and int(headers['term']) > int(node.term)) or
-            (headers['status'] == 'Candidate' and int(headers['term']) > int(node.term))):
-        node.become_follower()
     if int(headers['term']) > int(node.term):
         if node.verbosity == 1:
             print(node.ip, ' were ', node.status,
                     ' and had lower term limit than sender and became follower.')
+        node.become_follower()
         node.update_term(int(headers['term']))
+    if (headers['status'] == 'Leader'):
+        node.leader_ip = headers['ip-address']
 
     return True
 
@@ -106,7 +106,7 @@ def unpack_and_send(queue):
         headers = {'leader_ip_address': node.ip}
 
         r = requests.get(url, headers=headers)
-
+        print(r)
         if r.json()['message'] != 'ok':
             print('Not leader')
 
@@ -238,7 +238,7 @@ def data_sent_response():
     :return: "ok" if deleted, "Not leader" if called from follower node
     """
     # TODO retrieve leader url from election guys
-    if request.headers['leader_ip_address'] == 'http://172.17.0.9:5000/':
+    if request.headers['leader_ip_address'] == node.leader_ip:
         node.send_queue.clear()
         json_object = {'message': 'ok'}
     else:
