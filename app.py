@@ -97,7 +97,7 @@ def unpack_and_send(queue):
     if processes_hash_status == 200:
         processes_status = send_to_gcp(processes[0][0], processes)
 
-    print("------------------------------------" + str(resources_status) + "-----------------------------------------")
+    print("------------------------------------" + str(resources_status) + "-----------------------------------------") # giver 0
     print(resources_hash_status)
     if (resources_status == 200) or (resources_hash_status == 1):
         print('KEKE')
@@ -163,7 +163,7 @@ def send_to_gcp(old_headers, message):
                'access_token': node.token
                }
     r = requests.post(url, json=message, headers=headers)
-
+    print("--------------------" + r.json()['message'] + "------------------------------------")
     if r.json()['message'] != 'ok':
         node.get_auth_token(old_headers['ip_address'])
         return 0
