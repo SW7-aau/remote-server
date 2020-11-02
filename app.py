@@ -238,6 +238,7 @@ def data_sent_response():
     :return: "ok" if deleted, "Not leader" if called from follower node
     """
     # TODO retrieve leader url from election guys
+    print('YAAAAAAAAAWN')
     if request.headers['leader_ip_address'] == node.leader_ip:
         node.send_queue.clear()
         json_object = {'message': 'ok'}
