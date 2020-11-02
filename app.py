@@ -167,8 +167,11 @@ def send_hash(old_headers, message):
     print(r.json())
     if r.json()['message'] == 'ok':
         return r.status_code
-    elif r.json()['message'] == 'token_expired':
+    elif r.json()['message'] == 'Authorization token is expired':
         get_auth_token(old_headers['ip_address'])
+        return 0
+    elif r.json()['message'] == 'Not authorized':
+        node.become_follower()
         return 0
     elif r.json()['message'] == 'hash_exists':
         return 1
