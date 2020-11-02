@@ -35,6 +35,8 @@ import requests
 import time
 from random import Random
 import sys
+import hashlib
+import base64
 
 
 class Node:
@@ -44,9 +46,9 @@ class Node:
         :param executor: thread to run on
         :param args: args used to start program (ip, cluster, port)
         """
-        self.ip = args.ip_address
-        self.cluster_id = args.cluster_id
-        self.port = args.port
+        self.ip = str(args.ip_address)
+        self.cluster_id = str(args.cluster_id)
+        self.port = str(args.port)
         self.verbosity = args.verbosity
         self.node = "test-node"
         self.status = "Follower"
@@ -78,7 +80,7 @@ class Node:
         """
         Get config from GCP
         """
-        tmp = requests.get('http://217.69.10.141:5000/get-config?cluster_id=' + str(self.cluster_id)).json()
+        tmp = requests.get('http://217.69.10.141:5000/get-config?cluster_id=' + self.cluster_id).json()
         lst = []
         for n in tmp:
             #if n['ip_address'] != self.ip:
