@@ -125,7 +125,7 @@ def send_hash(old_headers, message):
                }
 
     r = requests.post(url, json=message, headers=headers)
-    print(r.json())
+    print(r.status_code)
     if r.json()['message'] == 'ok':
         return r.status_code
     elif r.json()['message'] == 'Authorization token is expired':
