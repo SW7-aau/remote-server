@@ -97,7 +97,9 @@ def unpack_and_send(queue):
     if processes_hash_status == 200:
         processes_status = send_to_gcp(processes[0][0], processes)
 
-    if (resources_status & packages_status & processes_status == 200) or (
+    print(resources_status)
+    print(resources_hash_status)
+    if (resources_status == 200) or (
             resources_hash_status == 1):
         url = request.headers['local_ip_address']
         print("data sent response sent to " + url)
