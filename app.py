@@ -128,6 +128,8 @@ def send_hash(old_headers, message):
 
     r = requests.post(url, json=message, headers=headers)
     print(r.status_code)
+    if r.status_code == 409:
+        return 1
     if r.json()['message'] == 'ok':
         return r.status_code
     elif r.json()['message'] == 'Authorization token is expired':
@@ -136,8 +138,6 @@ def send_hash(old_headers, message):
     elif r.json()['message'] == 'Not authorized':
         node.become_follower()
         return 0
-    elif r.status_code == 409:
-        return 1
 
 
 def send_to_gcp(old_headers, message):
