@@ -101,9 +101,9 @@ def unpack_and_send(queue):
     print(resources_hash_status)
     if (resources_status == 200) or (resources_hash_status == 1):
         print('KEKE')
-        url = request.headers['local_ip_address']
+        url = queue[0][0]['ip_address'] + ':' + node.port + '/datasent'
         print("data sent response sent to " + url)
-        headers = {'leader_ip_address': request.url_root}
+        headers = {'leader_ip_address': node.ip}
 
         r = requests.get(url, headers=headers)
 
@@ -254,8 +254,8 @@ def information_queue():
     """
     temp_request = [{
         'package_type': request.headers['package_type'],
-        'nodeid': request.headers['nodeid'],
-        'ip_address': request.headers['ip_address'],
+        'nodeid': node.node,
+        'ip_address': node.ip,
 
     }, request.get_json()]
 
