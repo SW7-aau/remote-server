@@ -97,7 +97,7 @@ def unpack_and_send(queue):
     if processes_hash_status == 200:
         processes_status = send_to_gcp(processes[0][0], processes)
 
-    print(resources_status)
+    print("------------------------------------" + str(resources_status) + "-----------------------------------------")
     print(resources_hash_status)
     if (resources_status == 200) or (resources_hash_status == 1):
         print('KEKE')
