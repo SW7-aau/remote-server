@@ -67,6 +67,7 @@ def get_packets(packet, verbosity):
     d = {}
     try:
         protocol = str(packet[1].proto)
+        print(protocol)
         d = ip_to_dict(packet, protocol)
         packets_dict_list.append(d)
 
