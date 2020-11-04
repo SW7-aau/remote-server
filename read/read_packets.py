@@ -17,7 +17,7 @@ def arg_parsing():
                              'used to capture network packets.')
     parser.add_argument('-s', '--send-frequency', type=int, default=50,
                         help='How many packets should be sniffed before sent')
-    parser.add_argument('-v', '--verbosity', type=int, default=1,
+    parser.add_argument('-v', '--verbosity', type=int, default=0,
                         help='Increase output verbosity.')
     parser.add_argument('-a', '--ip-address',
                         help='IP Adress of the current node.')
@@ -31,7 +31,6 @@ def ip_to_dict(packet, protocol):
     d = {'timestamp': packet.sniff_timestamp.split('.')[0],
          'protocol': packet.transport_layer, 'size': str(packet.length),
          'info': {}}
-    print(d)
     if str(protocol) == '2':  # Protocol = IGMP
         d['info']['dst'] = str(packet[1].dst)
         d['info']['dst_resolved'] = str(packet[0].addr_oui_resolved)
@@ -47,7 +46,6 @@ def ip_to_dict(packet, protocol):
         d['info']['src_port'] = packet[2].srcport
         if protocol == '17':  # Protocol = UPD  ---- Else TCP
             d['info']['layer'] = packet[3].layer_name
-    print(d)
     return d
 
 
@@ -72,7 +70,6 @@ def get_packets(packet, verbosity):
     d = {}
     try:
         protocol = str(packet[1].proto)
-        print(protocol)
         d = ip_to_dict(packet, protocol)
         packets_dict_list.append(d)
 
@@ -99,7 +96,6 @@ def get_packets(packet, verbosity):
                 print('EAPOL')
             else:
                 print('Unknown package')
-                print(packet)
 
     if not d and verbosity == 1:  # Used to find undiscovered protocols
         print("Empty dict")
