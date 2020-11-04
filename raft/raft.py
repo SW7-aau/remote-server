@@ -133,6 +133,8 @@ class Node:
         :return:
         """
         # TODO: Also receive queue to send to gcp
+        if self.verbosity == 1:
+            print('\n' + 'Hearto-Beato' + '\n')
         for server in self.config:
             if self.verbosity == 1:
                 print("Sending heartbeat to ", server)
@@ -151,7 +153,7 @@ class Node:
                    'ip_address': self.ip,
                    'term': str(self.term),
                    'status': self.status}
-        r = requests.get(url=follower_url, headers=headers)
+        r = requests.get(url=follower_url, headers=headers, timeout=2)
         # Send result to GCP
         host_url = f'http://{self.ip}:{self.port}/sendtohost'
         requests.post(url=host_url)
