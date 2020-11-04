@@ -137,6 +137,9 @@ class Node:
             if self.verbosity == 1:
                 print("Sending heartbeat to ", server)
             self.executor.submit(self.get_data, server)
+        # Send result to GCP
+        host_url = f'http://{self.ip}:{self.port}/sendtohost'
+        requests.post(url=host_url)
 
     def get_data(self, server):
         """
@@ -151,10 +154,7 @@ class Node:
                    'ip_address': self.ip,
                    'term': str(self.term),
                    'status': self.status}
-        r = requests.get(url=follower_url, headers=headers)
-        # Send result to GCP
-        host_url = f'http://{self.ip}:{self.port}/sendtohost'
-        requests.post(url=host_url)
+        r = requests.get(url=follower_url, headers=headers, timeout=2)
 
     def request_vote(self, url):
         """
