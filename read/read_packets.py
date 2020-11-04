@@ -93,6 +93,7 @@ def get_packets(packet, verbosity):
                 print('EAPOL')
             else:
                 print('Unknown package')
+                print(packet)
 
     if not d and verbosity == 1:  # Used to find undiscovered protocols
         print("Empty dict")
