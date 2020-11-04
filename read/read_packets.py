@@ -5,7 +5,7 @@ import sys
 sys.path.insert(1, 'scheduler')
 import cyclic_executive
 
-ip_address = requests.get('https://api.ipify.org').text
+
 packets_dict_list = []
 
 
@@ -19,6 +19,10 @@ def arg_parsing():
                         help='How many packets should be sniffed before sent')
     parser.add_argument('-v', '--verbosity', type=int, default=1,
                         help='Increase output verbosity.')
+    parser.add_argument('-a', '--ip-address',
+                        help='IP Adress of the current node.')
+    parser.add_argument('-p', '--port', type=int,
+                        help='The port the current node is using.')
 
     return parser.parse_args()
 
@@ -104,7 +108,7 @@ def get_packets(packet, verbosity):
 
 
 def send_node_status(json_object):
-    url = "http://127.0.0.1:5000/storedata"
+    url = ip_address + ":" + str(port) + "/storedata"
     headers = {'Content-type': 'application/json',
                'Accept': 'text/plain',
                'package_type': '2',
@@ -125,6 +129,8 @@ if __name__ == '__main__':
     args = arg_parsing()
 
     verbosity = 1 if args.verbosity != 0 else args.verbosity
+    ip_address = args.ip_address
+    port = args.port
 
     capture = pyshark.LiveCapture(interface=args.interface)
 
