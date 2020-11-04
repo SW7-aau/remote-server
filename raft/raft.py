@@ -133,8 +133,6 @@ class Node:
         :return:
         """
         # TODO: Also receive queue to send to gcp
-        if self.verbosity == 1:
-            print('\n' + 'Hearto-Beato' + '\n')
         for server in self.config:
             if self.verbosity == 1:
                 print("Sending heartbeat to ", server)

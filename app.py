@@ -202,7 +202,7 @@ def leader_send():
     """
     if check_headers(request.headers):
         if node.verbosity == 1:
-            print('Heartbeat')
+            print('Heartbeat from: ' + request.headers['ip_address'])
         node.set_timer()
 
         if not node.send_queue:
