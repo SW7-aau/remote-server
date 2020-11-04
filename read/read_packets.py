@@ -27,6 +27,7 @@ def ip_to_dict(packet, protocol):
     d = {'timestamp': packet.sniff_timestamp.split('.')[0],
          'protocol': packet.transport_layer, 'size': str(packet.length),
          'info': {}}
+    print(d)
     if str(protocol) == '2':  # Protocol = IGMP
         d['info']['dst'] = str(packet[1].dst)
         d['info']['dst_resolved'] = str(packet[0].addr_oui_resolved)
@@ -42,7 +43,7 @@ def ip_to_dict(packet, protocol):
         d['info']['src_port'] = packet[2].srcport
         if protocol == '17':  # Protocol = UPD  ---- Else TCP
             d['info']['layer'] = packet[3].layer_name
-
+    print(d)
     return d
 
 
