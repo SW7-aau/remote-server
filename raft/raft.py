@@ -58,7 +58,7 @@ class Node:
         self.executor = executor
         self.leader_ip = ""
         self.gcp_ip = ""
-        self.majority = int((len(self.config)+1)/2)+1
+        self.majority = int((len(self.config))/2)+1
         # TODO: Reconsider vote-counting to be based on terms.
         self.term = 0
         self.votes = 0
