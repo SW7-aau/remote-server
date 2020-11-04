@@ -145,10 +145,10 @@ class Node:
         """
         # TODO: Send a received message to gcp
         follower_url = server + '/sendtoleader'
-        headers = {'Content-type': 'application/json',
+        headers = {'Content_type': 'application/json',
                    'Accept': 'text/plain',
                    'nodeid': self.node,
-                   'ip-address': self.ip,
+                   'ip_address': self.ip,
                    'term': str(self.term),
                    'status': self.status}
         r = requests.get(url=follower_url, headers=headers)
@@ -186,12 +186,12 @@ class Node:
     # Update functions
     def create_headers(self):
         # return {"ip": self.ip, "term": self.term}
-        return {'Content-type': 'application/json',
+        return {'Content_type': 'application/json',
                 'Accept': 'text/plain',
-                'auth-token': 'testtoken',
+                'access_token': 'testtoken',
                 'package_type': '1',
                 'nodeid': 'testid',
-                'ip-address': self.ip,
+                'ip_address': self.ip,
                 'term': str(self.term),
                 'status': self.status}
 
