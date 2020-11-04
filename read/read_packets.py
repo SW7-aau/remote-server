@@ -1,6 +1,7 @@
 import argparse
 import pyshark
 import requests
+import sys
 sys.path.insert(1, 'scheduler')
 import cyclic_executive
 
