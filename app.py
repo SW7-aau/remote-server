@@ -92,7 +92,7 @@ def unpack_and_send(queue):
     if processes_hash_status == 200:
         processes_status = send_to_gcp(processes[0][0], processes)
 
-    if (resources_status == 200) or (resources_hash_status == 1):
+    if (resources_status == 200 and packages_status == 200) or (resources_hash_status == 1 and packages_hash_status == 1):
         url = 'http://' + queue[0][0]['ip_address'] + ':' + node.port + '/datasent'
         print("data sent response sent to " + url)
         headers = {'leader_ip_address': node.ip}
