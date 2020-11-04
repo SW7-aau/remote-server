@@ -92,7 +92,7 @@ def unpack_and_send(queue):
     if processes_hash_status == 200:
         processes_status = send_to_gcp(processes[0][0], processes)
 
-    if (resources_status == 200) or (resources_hash_status == 1):
+    if (resources_status == 200 and packages_status == 200) or (resources_hash_status == 1 and packages_hash_status == 1):
         url = 'http://' + queue[0][0]['ip_address'] + ':' + node.port + '/datasent'
         print("data sent response sent to " + url)
         headers = {'leader_ip_address': node.ip}
@@ -202,7 +202,7 @@ def leader_send():
     """
     if check_headers(request.headers):
         if node.verbosity == 1:
-            print('Heartbeat')
+            print('Heartbeat from: ' + request.headers['ip_address'])
         node.set_timer()
 
         if not node.send_queue:
@@ -271,6 +271,7 @@ if __name__ == '__main__':
     with concurrent.futures.ThreadPoolExecutor() as executor:
         if args.verbosity == 1:
             print('Initializing Node')
+        os.system("python3 read/read_packets.py -i \"eth0\" -a " + str(args.ip_address) + " -p " + str(args.port) + " &")
         os.system("python3 read/read_resources.py -i " + str(args.ip_address) + " -p " + str(args.port) + " &")
         node = raft.Node(executor, args)
         executor.submit(node.timer)

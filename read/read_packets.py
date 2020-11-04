@@ -5,7 +5,7 @@ import sys
 sys.path.insert(1, 'scheduler')
 import cyclic_executive
 
-ip_address = requests.get('https://api.ipify.org').text
+
 packets_dict_list = []
 
 
@@ -19,6 +19,10 @@ def arg_parsing():
                         help='How many packets should be sniffed before sent')
     parser.add_argument('-v', '--verbosity', type=int, default=1,
                         help='Increase output verbosity.')
+    parser.add_argument('-a', '--ip-address',
+                        help='IP Adress of the current node.')
+    parser.add_argument('-p', '--port', type=int,
+                        help='The port the current node is using.')
 
     return parser.parse_args()
 
@@ -27,6 +31,7 @@ def ip_to_dict(packet, protocol):
     d = {'timestamp': packet.sniff_timestamp.split('.')[0],
          'protocol': packet.transport_layer, 'size': str(packet.length),
          'info': {}}
+    print(d)
     if str(protocol) == '2':  # Protocol = IGMP
         d['info']['dst'] = str(packet[1].dst)
         d['info']['dst_resolved'] = str(packet[0].addr_oui_resolved)
@@ -35,14 +40,14 @@ def ip_to_dict(packet, protocol):
         d['info']['layer'] = packet[2].layer_name
     else:
         d['info']['dst'] = str(packet[1].dst)
-        d['info']['dst_resolved'] = str(packet[0].addr_oui_resolved)
+        #d['info']['dst_resolved'] = str(packet[0].addr_oui_resolved)
         d['info']['dst_port'] = packet[2].dstport
         d['info']['src'] = str(packet[1].src)
-        d['info']['src_resolved'] = str(packet[0].src_oui_resolved)
+        #d['info']['src_resolved'] = str(packet[0].src_oui_resolved)
         d['info']['src_port'] = packet[2].srcport
         if protocol == '17':  # Protocol = UPD  ---- Else TCP
             d['info']['layer'] = packet[3].layer_name
-
+    print(d)
     return d
 
 
@@ -67,6 +72,7 @@ def get_packets(packet, verbosity):
     d = {}
     try:
         protocol = str(packet[1].proto)
+        print(protocol)
         d = ip_to_dict(packet, protocol)
         packets_dict_list.append(d)
 
@@ -93,6 +99,7 @@ def get_packets(packet, verbosity):
                 print('EAPOL')
             else:
                 print('Unknown package')
+                print(packet)
 
     if not d and verbosity == 1:  # Used to find undiscovered protocols
         print("Empty dict")
@@ -101,7 +108,7 @@ def get_packets(packet, verbosity):
 
 
 def send_node_status(json_object):
-    url = "http://127.0.0.1:5000/storedata"
+    url = "http://"+ ip_address + ":" + str(port) + "/storedata"
     headers = {'Content-type': 'application/json',
                'Accept': 'text/plain',
                'package_type': '2',
@@ -122,6 +129,8 @@ if __name__ == '__main__':
     args = arg_parsing()
 
     verbosity = 1 if args.verbosity != 0 else args.verbosity
+    ip_address = args.ip_address
+    port = args.port
 
     capture = pyshark.LiveCapture(interface=args.interface)
 
