@@ -108,7 +108,7 @@ def get_packets(packet, verbosity):
 
 
 def send_node_status(json_object):
-    url = ip_address + ":" + str(port) + "/storedata"
+    url = "http://"+ ip_address + ":" + str(port) + "/storedata"
     headers = {'Content-type': 'application/json',
                'Accept': 'text/plain',
                'package_type': '2',
