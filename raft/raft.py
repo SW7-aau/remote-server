@@ -52,8 +52,8 @@ class Node:
         self.verbosity = args.verbosity
         self.node = "test-node"
         self.status = "Follower"
-        # self.config = ["172.17.121.33:5001", "172.17.121.33:5002", "172.17.121.33:5003"]
         self.config = []
+        self.candidacy = True
         self.set_config()
         self.executor = executor
         self.leader_ip = ""
@@ -79,13 +79,10 @@ class Node:
     def set_config(self):
         """
         Get config from GCP
+        Assume dicts come in the form of {'ip': 'bool'}
         """
-        tmp = requests.get('http://217.69.10.141:5000/get-config?cluster_id=' + self.cluster_id).json()
-        lst = []
-        for n in tmp:
-            #if n['ip_address'] != self.ip:
-            lst.append(self.create_endpoint_url(n['ip_address'], self.port))
-        self.config = lst
+        self.config = requests.get('http://217.69.10.141:5000/get-config?cluster_id=' + self.cluster_id).json()
+        self.candidacy = bool(self.config[self.ip])
         print(len(self.config))
 
     def become_follower(self):
@@ -133,7 +130,8 @@ class Node:
         :return:
         """
         # TODO: Also receive queue to send to gcp
-        for server in self.config:
+        # Iterates through a list of keys in self.config
+        for server in [*self.config]:
             if self.verbosity == 1:
                 print("Sending heartbeat to ", server)
             self.executor.submit(self.get_data, server)
@@ -180,7 +178,7 @@ class Node:
         """
         if self.verbosity == 1:
             print('term: ', str(self.term))
-        for server in self.config:
+        for server in [*self.config]:
             self.executor.submit(self.request_vote, server)
 
     # Update functions
