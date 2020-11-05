@@ -274,7 +274,7 @@ if __name__ == '__main__':
         os.system("python3 read/read_packets.py -i \"eth0\" -a " + str(args.ip_address) + " -p " + str(args.port) + " &")
         os.system("python3 read/read_resources.py -i " + str(args.ip_address) + " -p " + str(args.port) + " &")
         node = raft.Node(executor, args)
-        executor.submit(node.timer)
+        #executor.submit(node.timer)
         if args.verbosity == 1:
             print('Initializing done')
         app.debug = False

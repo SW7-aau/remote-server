@@ -81,8 +81,13 @@ class Node:
         Get config from GCP
         Assume dicts come in the form of {'ip': 'bool'}
         """
-        self.config = requests.get('http://217.69.10.141:5000/get-config?cluster_id=' + self.cluster_id).json()
-        self.candidacy = bool(self.config[self.ip])
+        #self.config = requests.get('http://217.69.10.141:5000/get-config?cluster_id=' + self.cluster_id).json()
+        self.config = {'172.17.0.3': 'False', '172.17.0.7': 'False', '172.17.0.6': 'False', '172.17.0.5': 'False', '172.17.0.4': 'True'}
+        if self.candidacy == False and bool(self.config[self.ip]):
+            self.candidacy = bool(self.config[self.ip])
+            self.executor.submit(self.timer)
+        else:
+            self.candidacy = bool(self.config[self.ip])
         print(len(self.config))
 
     def become_follower(self):
@@ -240,8 +245,9 @@ class Node:
         """
         If timeout is reached, call timer_handler
         """
-        while True:
+        while self.candidacy:
             self.time = time.time()
+            print('we setting time bois')
             if self.time >= self.timeout:
                 self.set_timer()
                 #self.time_flag = True
