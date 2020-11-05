@@ -54,9 +54,9 @@ class Node:
         self.status = "Follower"
         self.time = None
         self.timeout = 0
+        self.set_timer()
         self.time_flag = False
         self.rand = Random()
-        self.set_timer()
         self.executor = executor
         self.config = []
         self.candidacy = False
@@ -80,17 +80,17 @@ class Node:
     def set_config(self):
         """
         Get config from GCP
-        Assume dicts come in the form of {'ip': 'bool'}
+        Assume dicts come in the form of {'ip': '0/1'}
         """
         #self.config = requests.get('http://217.69.10.141:5000/get-config?cluster_id=' + self.cluster_id).json()
-        self.config = {'172.17.0.3': 'False', '172.17.0.7': 'False', '172.17.0.6': 'False', '172.17.0.5': 'False', '172.17.0.4': 'True'}
-        test = self.config[self.ip]
+        self.config = {'172.17.0.3': '0', '172.17.0.7': '0', '172.17.0.6': '0', '172.17.0.5': '0', '172.17.0.4': '1'}
+        test = int(self.config[self.ip])
         print(test)
-        if self.candidacy == False and test:
-            self.candidacy = test
+        if self.candidacy == False and test == 1:
+            self.candidacy = True
             self.executor.submit(self.timer)
         else:
-            self.candidacy = test
+            self.candidacy = False
         print(len(self.config))
 
     def become_follower(self):
