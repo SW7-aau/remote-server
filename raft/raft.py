@@ -86,7 +86,7 @@ class Node:
         self.config = {'172.17.0.3': 'False', '172.17.0.7': 'False', '172.17.0.6': 'False', '172.17.0.5': 'False', '172.17.0.4': 'True'}
         test = bool(self.config[self.ip])
         print(self.ip)
-        print(self.config.keys)
+        print([*self.config])
         if self.candidacy == False and test:
             self.candidacy = test
             self.executor.submit(self.timer)
