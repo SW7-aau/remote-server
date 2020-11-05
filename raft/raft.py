@@ -52,22 +52,22 @@ class Node:
         self.verbosity = args.verbosity
         self.node = "test-node"
         self.status = "Follower"
+        self.time = None
+        self.timeout = 0
+        self.time_flag = False
+        self.rand = Random()
         self.set_timer()
         self.executor = executor
         self.config = []
         self.candidacy = False
         self.set_config()
+        self.majority = int((len(self.config))/2)+1
         self.leader_ip = ""
         self.gcp_ip = ""
-        self.majority = int((len(self.config))/2)+1
         # TODO: Reconsider vote-counting to be based on terms.
         self.term = 0
         self.votes = 0
         self.voted = False
-        self.rand = Random()
-        self.time = None
-        self.timeout = 0
-        self.time_flag = False
         self.main_queue = []
         self.send_queue = []
         self.leader_queue = []
