@@ -46,6 +46,8 @@ class Node:
         :param executor: thread to run on
         :param args: args used to start program (ip, cluster, port)
         """
+        self.rand = Random()
+        self.executor = executor
         self.ip = str(args.ip_address)
         self.cluster_id = str(args.cluster_id)
         self.port = str(args.port)
@@ -54,13 +56,10 @@ class Node:
         self.status = "Follower"
         self.time = None
         self.timeout = 0
-        self.set_timer()
         self.time_flag = False
-        self.rand = Random()
-        self.executor = executor
+        self.set_timer()
         self.config = []
         self.candidacy = False
-        #self.candidacy = True
         self.set_config()
         self.majority = int((len(self.config))/2)+1
         self.leader_ip = ""
