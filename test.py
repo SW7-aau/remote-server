@@ -1,5 +1,15 @@
-import requests
-
-config = requests.get('http://217.69.10.141:5000/get-config?cluster_id=' + '3000').json()
-print(config)
-print([*config])
+candidacy = False
+config = {'172.17.0.3': 'False', '172.17.0.7': 'False', '172.17.0.6': 'False', '172.17.0.5': 'False', '172.17.0.4': 'True'}
+ip = '172.17.0.4'
+test = config[ip]
+print('ip: ' + ip)
+print('config: ' + str([*config]))
+print('config[ip]: ' + str(config[ip]))
+print('Config but different ip: ' + str(config['172.17.0.3']))
+print('candidacy: ' + str(candidacy))
+print('This cant be real: ' + str(test))
+if ((candidacy == False) and test):
+    candidacy = test
+else:
+    candidacy = test
+print(str(candidacy))
