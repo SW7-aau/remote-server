@@ -59,8 +59,8 @@ class Node:
         self.set_timer()
         self.executor = executor
         self.config = []
-        #self.candidacy = False
-        self.candidacy = True
+        self.candidacy = False
+        #self.candidacy = True
         self.set_config()
         self.majority = int((len(self.config))/2)+1
         self.leader_ip = ""
