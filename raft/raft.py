@@ -53,7 +53,7 @@ class Node:
         self.node = "test-node"
         self.status = "Follower"
         self.config = []
-        self.candidacy = True
+        self.candidacy = False
         self.set_config()
         self.executor = executor
         self.leader_ip = ""
