@@ -249,8 +249,8 @@ class Node:
         """
         while self.candidacy:
             self.time = time.time()
-            print('we setting time bois')
             if self.time >= self.timeout:
+                print('We just timed out')
                 self.set_timer()
                 #self.time_flag = True
                 self.executor.submit(self.timer_handler)
