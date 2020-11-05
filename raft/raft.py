@@ -59,7 +59,8 @@ class Node:
         self.set_timer()
         self.executor = executor
         self.config = []
-        self.candidacy = False
+        #self.candidacy = False
+        self.candidacy = True
         self.set_config()
         self.majority = int((len(self.config))/2)+1
         self.leader_ip = ""
@@ -83,13 +84,14 @@ class Node:
         """
         #self.config = requests.get('http://217.69.10.141:5000/get-config?cluster_id=' + self.cluster_id).json()
         self.config = {'172.17.0.3': 'False', '172.17.0.7': 'False', '172.17.0.6': 'False', '172.17.0.5': 'False', '172.17.0.4': 'True'}
-        print(bool(self.config[self.ip]))
-        print(type(bool(self.config[self.ip])))
-        if self.candidacy == False and bool(self.config[self.ip]):
-            self.candidacy = bool(self.config[self.ip])
+        test = bool(self.config[self.ip])
+        print(self.ip)
+        print(self.config.keys)
+        if self.candidacy == False and test:
+            self.candidacy = test
             self.executor.submit(self.timer)
         else:
-            self.candidacy = bool(self.config[self.ip])
+            self.candidacy = test
         print(len(self.config))
 
     def become_follower(self):
