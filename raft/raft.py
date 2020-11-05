@@ -52,10 +52,11 @@ class Node:
         self.verbosity = args.verbosity
         self.node = "test-node"
         self.status = "Follower"
+        self.set_timer()
+        self.executor = executor
         self.config = []
         self.candidacy = False
         self.set_config()
-        self.executor = executor
         self.leader_ip = ""
         self.gcp_ip = ""
         self.majority = int((len(self.config))/2)+1
@@ -73,7 +74,6 @@ class Node:
         self.client_secret = '506c8044e28cbc71e989a1d9885d0e'
         self.client_id = '6e9fe75e4263ee84a4cadc1674182f'
         self.token = None
-        self.set_timer()
 
     # Setup functions
     def set_config(self):
