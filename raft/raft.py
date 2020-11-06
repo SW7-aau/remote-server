@@ -36,8 +36,8 @@ import time
 from random import Random
 import sys
 import hashlib
+import json
 import base64
-
 
 class Node:
     def __init__(self, executor, args):
@@ -67,6 +67,7 @@ class Node:
         self.time = None
         self.timeout = 0
         self.time_flag = False
+        self.valid_hash = "none"
         self.main_queue = []
         self.send_queue = []
         self.leader_queue = []
@@ -87,6 +88,24 @@ class Node:
             lst.append(self.create_endpoint_url(n['ip_address'], self.port))
         self.config = lst
         print(len(self.config))
+
+    def read_config(self):
+        with open("network.json", "r") as outfile:
+            data = json.load(outfile)
+            lst = []
+            for n in data:
+                #if n['ip_address'] != self.ip:
+                lst.append(self.create_endpoint_url(n['ip_address'], self.port))
+            self.config = lst
+            print(len(self.config))
+
+    def fetch_config_file(self):
+        while True:
+            # if token - is active
+            r = requests.get('http://217.69.10.141:5000/get-config?cluster_id=' + self.cluster_id)
+            for i in self.config:
+                requests.post('http://' + str(i) + ':5000/updateConfigFile', json = r.json, headers = {"version_hash": str(r.headers['version_hash'])})
+            time.sleep(60)
 
     def become_follower(self):
         """
