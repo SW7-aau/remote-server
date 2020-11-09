@@ -17,7 +17,7 @@ def arg_parsing():
     parser = argparse.ArgumentParser(prog='Read Packets',
                                      description='Read Network Packets')
     parser.add_argument('-i', '--ip-address',
-                        help='IP Adress of the current node.')
+                        help='IP Address of the current node.')
     parser.add_argument('-c', '--cluster-id', type=int,
                         help='ID of the cluster the current node is in.')
     parser.add_argument('-p', '--port', type=int,
