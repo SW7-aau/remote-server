@@ -141,7 +141,7 @@ class Node:
         for server in [*self.config]:
             if self.verbosity == 1:
                 print("Sending heartbeat to ", server)
-            server = self.create_endpoint_url(server)
+            server = self.create_endpoint_url(server, '5000')
             self.executor.submit(self.get_data, server)
         # Send result to GCP
         host_url = f'http://{self.ip}:{self.port}/sendtohost'
@@ -153,7 +153,7 @@ class Node:
         :param server: Follower node's address
         """
         # TODO: Send a received message to gcp
-        follower_url = self.create_endpoint_url(server) + '/sendtoleader'
+        follower_url = server + '/sendtoleader'
         headers = {'Content_type': 'application/json',
                    'Accept': 'text/plain',
                    'nodeid': self.node,
@@ -187,6 +187,7 @@ class Node:
         if self.verbosity == 1:
             print('term: ', str(self.term))
         for server in [*self.config]:
+            server = self.create_endpoint_url(server, '5000')
             self.executor.submit(self.request_vote, server)
 
     # Update functions
