@@ -82,12 +82,7 @@ class Node:
         Assume dicts come in the form of {'ip': '0/1'}
         """
         #self.config = requests.get('http://217.69.10.141:5000/get-config?cluster_id=' + self.cluster_id).json()
-        self.config = {
-            self.create_endpoint_url('172.17.0.3', '5000'): '0', 
-            self.create_endpoint_url('172.17.0.7', '5000'): '0', 
-            self.create_endpoint_url('172.17.0.6', '5000'): '0', 
-            self.create_endpoint_url('172.17.0.5', '5000'): '0', 
-            self.create_endpoint_url('172.17.0.4', '5000'): '1'}
+        self.config = {'172.17.0.3': '0', '172.17.0.7': '0', '172.17.0.6': '0', '172.17.0.5': '0', '172.17.0.4': '1'}
         test = int(self.config[self.ip])
         print(test)
         if self.candidacy == False and test == 1:
