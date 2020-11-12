@@ -115,7 +115,7 @@ def check_hash(old_headers, message):
      database, 0 if access token has expired
     """
 
-    url = "http://217.69.10.141:5000/check-hash"  # node hash url
+    url = "http://95.179.226.113:5000/check-hash"  # node hash url
     headers = {'Content_Type': 'application/json',
                'Accept': 'text/plain',
                'access_token': node.token,
@@ -137,7 +137,7 @@ def check_hash(old_headers, message):
 
 
 def send_hash(message):
-    url = "http://217.69.10.141:5000/insert-hash"
+    url = "http://95.179.226.113:5000/insert-hash"
     headers = {'Content_Type': 'application/json',
                'Accept': 'text/plain',
                'access_token': node.token,
@@ -161,11 +161,11 @@ def send_to_gcp(old_headers, message):
     :return: status_code from the request
     """
     if old_headers['package_type'] == '1':
-        url = 'http://217.69.10.141:5000/node-resources'
+        url = 'http://95.179.226.113:5000/node-resources'
     elif old_headers['package_type'] == '2':
-        url = 'http://217.69.10.141:5000/node-network'
+        url = 'http://95.179.226.113:5000/node-network'
     elif old_headers['package_type'] == '3':
-        url = 'http://217.69.10.141:5000/node-processess'
+        url = 'http://95.179.226.113:5000/node-processess'
 
     else:
         return

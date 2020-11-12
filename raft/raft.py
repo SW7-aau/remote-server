@@ -80,7 +80,7 @@ class Node:
         """
         Get config from GCP
         """
-        tmp = requests.get('http://217.69.10.141:5000/get-config?cluster_id=' + self.cluster_id).json()
+        tmp = requests.get('http://95.179.226.113:5000/get-config?cluster_id=' + self.cluster_id).json()
         lst = []
         for n in tmp:
             #if n['ip_address'] != self.ip:
@@ -229,7 +229,7 @@ class Node:
             'ip_address': self.ip,
             'cluster_id': self.cluster_id
         }
-        url = "http://217.69.10.141:5000/token"
+        url = "http://95.179.226.113:5000/token"
 
         r = requests.post(url=url, data=token_data, headers=token_headers)
 
