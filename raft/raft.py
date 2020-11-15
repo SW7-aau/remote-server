@@ -82,9 +82,9 @@ class Node:
         Assume dicts come in the form of {'ip': '0/1'}
         """
         self.config = requests.get('http://95.179.226.113:5000/get-config?cluster_id=' + self.cluster_id).json()
-        test = int(self.config[self.ip])
-        print(test)
-        if self.candidacy == False and test == 1:
+        active = int(self.config[self.ip])
+        print(active)
+        if self.candidacy == False and active == 1:
             self.candidacy = True
             self.executor.submit(self.timer)
         else:
