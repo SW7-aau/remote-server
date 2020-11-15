@@ -1,7 +1,7 @@
 import requests
 
 candidacy = False
-config = requests.get('http://95.179.226.113:5000/get-config?cluster_id=' + '3000')
+config = requests.get('http://95.179.226.113:5000/get-config?cluster_id=' + '3000').json
 ip = '172.17.0.3'
 test = int(config[ip])
 print('ip: ' + ip)
