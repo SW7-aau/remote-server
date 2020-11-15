@@ -22,7 +22,7 @@ def arg_parsing():
                         help='ID of the cluster the current node is in.')
     parser.add_argument('-p', '--port', type=int,
                         help='The port the current node is using.')
-    parser.add_argument('-v', '--verbosity', type=int, default=1,
+    parser.add_argument('-v', '--verbosity', type=int, default=0,
                         help='Increase output verbosity.')
 
     return parser.parse_args()
