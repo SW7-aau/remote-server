@@ -17,7 +17,7 @@ def arg_parsing():
     parser = argparse.ArgumentParser(prog='Read Packets',
                                      description='Read Network Packets')
     parser.add_argument('-i', '--ip-address',
-                        help='IP Adress of the current node.')
+                        help='IP Address of the current node.')
     parser.add_argument('-c', '--cluster-id', type=int,
                         help='ID of the cluster the current node is in.')
     parser.add_argument('-p', '--port', type=int,
@@ -71,26 +71,29 @@ def unpack_and_send(queue):
     if resources:
         b64 = base64.encodebytes(json.dumps(resources).encode())
         hashed_resources = hashlib.sha256(b64).hexdigest()
-        resources_hash_status = send_hash(resources[0][0], hashed_resources)
+        resources_hash_status = check_hash(resources[0][0], hashed_resources)
 
     if packages:
         b64 = base64.encodebytes(json.dumps(packages).encode())
         hashed_packages = hashlib.sha256(b64).hexdigest()
-        packages_hash_status = send_hash(packages[0][0], hashed_packages)
+        packages_hash_status = check_hash(packages[0][0], hashed_packages)
 
     if processes:
         b64 = base64.encodebytes(json.dumps(processes).encode())
         hashed_processes = hashlib.sha256(b64).hexdigest()
-        processes_hash_status = send_hash(processes[0][0], hashed_processes)
+        processes_hash_status = check_hash(processes[0][0], hashed_processes)
 
     if resources_hash_status == 200:
         resources_status = send_to_gcp(resources[0][0], resources)
+        send_hash(hashed_resources)
 
     if packages_hash_status == 200:
         packages_status = send_to_gcp(packages[0][0], packages)
+        send_hash(hashed_packages)
 
     if processes_hash_status == 200:
         processes_status = send_to_gcp(processes[0][0], processes)
+        send_hash(hashed_processes)
 
     if (resources_status == 200 and packages_status == 200) or (resources_hash_status == 1 and packages_hash_status == 1):
         url = 'http://' + queue[0][0]['ip_address'] + ':' + node.port + '/datasent'
@@ -103,19 +106,20 @@ def unpack_and_send(queue):
             print('Not leader')
 
 
-def send_hash(old_headers, message):
+def check_hash(old_headers, message):
     """
-    Sends a hashed version of the data to GCP to check if it is already there
+    Checks if the hash is already in the database at GCP
     :param old_headers: Headers from the send_queue
     :param message: A hashed version of the send_queue
     :return: status_code from the request if successful, 1 if hash exists in
      database, 0 if access token has expired
     """
 
-    url = "http://217.69.10.141:5000/node-hash"  # node hash url
+    url = "http://95.179.226.113:5000/check-hash"  # node hash url
     headers = {'Content_Type': 'application/json',
                'Accept': 'text/plain',
-               'access_token': node.token
+               'access_token': node.token,
+               'cluster_id': node.cluster_id
                }
 
     r = requests.post(url, json=message, headers=headers)
@@ -125,11 +129,28 @@ def send_hash(old_headers, message):
     if r.json()['message'] == 'ok':
         return r.status_code
     elif r.json()['message'] == 'Authorization token is expired':
-        node.get_auth_token(old_headers['ip_address'])
+        node.get_auth_token()
         return 0
     elif r.json()['message'] == 'Not authorized':
         node.become_follower()
         return 0
+
+
+def send_hash(message):
+    url = "http://95.179.226.113:5000/insert-hash"
+    headers = {'Content_Type': 'application/json',
+               'Accept': 'text/plain',
+               'access_token': node.token,
+               'cluster_id': node.cluster_id
+               }
+
+    r = requests.post(url, json=message, headers=headers)
+
+    if r.json()['message'] != 'ok':
+        node.get_auth_token()
+        return 0
+
+    return r.status_code
 
 
 def send_to_gcp(old_headers, message):
@@ -140,11 +161,11 @@ def send_to_gcp(old_headers, message):
     :return: status_code from the request
     """
     if old_headers['package_type'] == '1':
-        url = 'http://217.69.10.141:5000/node-resources'
+        url = 'http://95.179.226.113:5000/node-resources'
     elif old_headers['package_type'] == '2':
-        url = 'http://217.69.10.141:5000/node-network'
+        url = 'http://95.179.226.113:5000/node-network'
     elif old_headers['package_type'] == '3':
-        url = 'http://217.69.10.141:5000/node-processess'
+        url = 'http://95.179.226.113:5000/node-processess'
 
     else:
         return
@@ -152,12 +173,13 @@ def send_to_gcp(old_headers, message):
     print('Sent to: ', old_headers['package_type'])
     headers = {'Content_Type': 'application/json',
                'Accept': 'text/plain',
-               'access_token': node.token
+               'access_token': node.token,
+               'cluster_id': node.cluster_id
                }
     r = requests.post(url, json=message, headers=headers)
 
     if r.json()['message'] != 'ok':
-        node.get_auth_token(old_headers['ip_address'])
+        node.get_auth_token()
         return 0
 
     return r.status_code

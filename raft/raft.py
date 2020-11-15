@@ -123,7 +123,7 @@ class Node:
             print(self.ip, " became leader with ", str(self.votes), " votes.")
         self.set_timer()
         self.status = "Leader"
-        self.get_auth_token(self.ip)
+        self.get_auth_token()
         self.heartbeat()
 
     # Misc functions
@@ -211,10 +211,9 @@ class Node:
         self.votes = 0
         
     # Leader functions
-    def get_auth_token(self, ip_address):
+    def get_auth_token(self):
         """
         Used to get access token from GCP
-        :param ip_address: An IP Address used for generating access token
         :return: Sets global token to returned access token
         """
         client_creds = f'{self.client_id}:{self.client_secret}'
@@ -232,11 +231,11 @@ class Node:
         }
         token_headers = {
             'Authorization': client_creds_b64,
-            'nodeid': 'test_id',
-            'ip_address': ip_address,
-            'package_type': '1'
+            'nodeid': self.node,
+            'ip_address': self.ip,
+            'cluster_id': self.cluster_id
         }
-        url = "http://217.69.10.141:5000/token"
+        url = "http://95.179.226.113:5000/token"
 
         r = requests.post(url=url, data=token_data, headers=token_headers)
 
