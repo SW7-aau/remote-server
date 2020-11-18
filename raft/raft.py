@@ -60,7 +60,7 @@ class Node:
         self.set_timer()
         self.config = []
         self.candidacy = False
-        self.set_config()
+        self.fetch_config()
         self.majority = int((len(self.config))/2)+1
         self.leader_ip = ""
         self.gcp_ip = ""
@@ -76,12 +76,16 @@ class Node:
         self.token = None
 
     # Setup functions
-    def set_config(self):
+    def fetch_config(self):
         """
         Get config from GCP
         Assume dicts come in the form of {'ip': '0/1'}
         """
-        self.config = requests.get('http://95.179.226.113:5000/get-config?cluster_id=' + self.cluster_id).json()
+        cfg = requests.get('http://95.179.226.113:5000/get-config?cluster_id=' + self.cluster_id).json()
+        self.set_config(cfg)
+        
+    def set_config(self, config):
+        self.config = config
         active = int(self.config[self.ip])
         print(active)
         if self.candidacy == False and active == 1:
