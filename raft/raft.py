@@ -162,6 +162,7 @@ class Node:
                    'nodeid': self.node,
                    'ip_address': self.ip,
                    'term': str(self.term),
+                   'config': self.config,
                    'status': self.status}
         r = requests.get(url=follower_url, headers=headers, timeout=2)
 
