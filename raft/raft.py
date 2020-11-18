@@ -157,7 +157,7 @@ class Node:
         """
         # TODO: Send a received message to gcp
         follower_url = server + '/sendtoleader'
-        cfg = json.dumps(self.config, indent=4)
+        cfg = str(self.config)
         headers = {'Content_type': 'application/json',
                    'Accept': 'text/plain',
                    'nodeid': self.node,
