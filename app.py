@@ -22,7 +22,7 @@ def arg_parsing():
                         help='ID of the cluster the current node is in.')
     parser.add_argument('-p', '--port', type=int,
                         help='The port the current node is using.')
-    parser.add_argument('-v', '--verbosity', type=int, default=0,
+    parser.add_argument('-v', '--verbosity', type=int, default=1,
                         help='Increase output verbosity.')
 
     return parser.parse_args()
@@ -103,7 +103,8 @@ def unpack_and_send(queue):
         headers = {'leader_ip_address': node.ip}
 
         r = requests.get(url, headers=headers)
-        print(r)
+        if verbosity == 2:
+            print(r)
         if r.json()['message'] != 'ok':
             print('Not leader')
 
@@ -231,7 +232,8 @@ def leader_send():
 
         if not node.send_queue:
             node.send_queue.append(deepcopy(node.main_queue))
-            print(node.send_queue)
+            if verbosity == 2:
+                print(node.send_queue)
             node.main_queue.clear()
 
         headers = {
