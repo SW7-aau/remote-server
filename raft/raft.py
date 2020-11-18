@@ -37,7 +37,7 @@ from random import Random
 import sys
 import hashlib
 import base64
-
+import json
 
 class Node:
     def __init__(self, executor, args):
@@ -58,7 +58,7 @@ class Node:
         self.timeout = 0
         self.time_flag = False
         self.set_timer()
-        self.config = []
+        self.config = {}
         self.candidacy = False
         self.fetch_config()
         self.majority = int((len(self.config))/2)+1
@@ -157,12 +157,13 @@ class Node:
         """
         # TODO: Send a received message to gcp
         follower_url = server + '/sendtoleader'
+        cfg = json.dumps(self.config, indent=4)
         headers = {'Content_type': 'application/json',
                    'Accept': 'text/plain',
                    'nodeid': self.node,
                    'ip_address': self.ip,
                    'term': str(self.term),
-                   'config': self.config,
+                   'config': cfg,
                    'status': self.status}
         r = requests.get(url=follower_url, headers=headers, timeout=2)
 
