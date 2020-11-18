@@ -87,7 +87,7 @@ class Node:
         if self.candidacy == False and active == 1:
             self.candidacy = True
             self.executor.submit(self.timer)
-        else:
+        elif active != 1:
             self.candidacy = False
         print(len(self.config))
 
