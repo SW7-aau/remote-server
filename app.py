@@ -84,12 +84,10 @@ def unpack_and_send(queue):
         processes_hash_status = check_hash(processes[0][0], hashed_processes)
 
     if resources_hash_status == 200:
-        print('Hashed resources is ', resources_hash_status)
         resources_status = send_to_gcp(resources[0][0], resources)
         send_hash(hashed_resources)
 
     if packages_hash_status == 200:
-        print('Hashed packages is ', packages_hash_status)
         packages_status = send_to_gcp(packages[0][0], packages)
         send_hash(hashed_packages)
 
@@ -127,7 +125,6 @@ def check_hash(old_headers, message):
     r = requests.post(url, json=message, headers=headers)
 
     if r.status_code == 409:
-        print('Already in database')
         return 1
     if r.json()['message'] == 'ok':
         return r.status_code
