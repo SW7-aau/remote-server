@@ -125,6 +125,7 @@ def check_hash(old_headers, message):
     r = requests.post(url, json=message, headers=headers)
     print(type(r.status_code))
     if r.status_code == 409:
+        print('Already in database')
         return 1
     if r.json()['message'] == 'ok':
         return r.status_code
@@ -232,7 +233,7 @@ def leader_send():
 
         if not node.send_queue:
             node.send_queue.append(deepcopy(node.main_queue))
-            print(node.send_queue)
+            # print(node.send_queue)
             node.main_queue.clear()
 
         headers = {
