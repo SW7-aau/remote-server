@@ -40,9 +40,6 @@ def check_headers(headers):
         node.update_term(int(headers['term']))
     if headers['status'] == 'Leader':
         node.leader_ip = headers['ip_address']
-        ayy = json.loads(headers['config'])
-        if ayy != node.config:
-            node.set_config(ayy)
 
     return True
 

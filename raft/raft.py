@@ -157,13 +157,11 @@ class Node:
         """
         # TODO: Send a received message to gcp
         follower_url = server + '/sendtoleader'
-        cfg = str(self.config)
         headers = {'Content_type': 'application/json',
                    'Accept': 'text/plain',
                    'nodeid': self.node,
                    'ip_address': self.ip,
                    'term': str(self.term),
-                   'config': cfg,
                    'status': self.status}
         r = requests.get(url=follower_url, headers=headers, timeout=2)
 
