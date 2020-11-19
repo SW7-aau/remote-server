@@ -139,12 +139,11 @@ class Node:
         Sends heartbeat to all followers in config
         :return:
         """
-        # TODO: Also receive queue to send to gcp
         # Iterates through a list of keys in self.config
         for server in [*self.config]:
             if self.verbosity == 1:
                 print("Sending heartbeat to ", server)
-            server = self.create_endpoint_url(server, '5000')
+            server = self.create_endpoint_url(server, self.port)
             self.executor.submit(self.get_data, server)
         # Send result to GCP
         host_url = f'http://{self.ip}:{self.port}/sendtohost'
@@ -164,6 +163,20 @@ class Node:
                    'term': str(self.term),
                    'status': self.status}
         r = requests.get(url=follower_url, headers=headers, timeout=2)
+
+    def share_config(self):
+        for server in [*self.config]:
+            server = self.create_endpoint_url(server, self.port)
+
+    def send_config(self, server):
+        follower_url = server + '/shareconfig'
+        headers = {'Content_type': 'application/json',
+                   'Accept': 'text/plain',
+                   'nodeid': self.node,
+                   'ip_address': self.ip,
+                   'term': str(self.term),
+                   'status': self.status}
+        r = requests.post(url=follower_url, json=self.config, headers=headers)
 
     def request_vote(self, url):
         """

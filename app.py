@@ -27,7 +27,6 @@ def arg_parsing():
 
     return parser.parse_args()
 
-
 def check_headers(headers):
     if int(headers['term']) < int(node.term):
         return False
@@ -101,7 +100,7 @@ def unpack_and_send(queue):
         headers = {'leader_ip_address': node.ip}
 
         r = requests.get(url, headers=headers)
-        if verbosity == 2:
+        if args.verbosity == 2:
             print(r)
         if r.json()['message'] != 'ok':
             print('Not leader')
@@ -215,6 +214,14 @@ def store_leader_data():
     node.leader_queue.append(r)
     return 'ok'
 
+@app.route('/updateconfig', methods=['POST'])
+def update_config():
+    if node.status == 'Leader':
+        node.set_config(request.get_json())
+        node.share_config()
+        return 'ok'
+    return 'The node was not a leader.'
+
 
 # Follower endpoints
 @app.route('/sendtoleader', methods=['POST', 'GET'])
@@ -230,7 +237,7 @@ def leader_send():
 
         if not node.send_queue:
             node.send_queue.append(deepcopy(node.main_queue))
-            if verbosity == 2:
+            if args.verbosity == 2:
                 print(node.send_queue)
             node.main_queue.clear()
 
@@ -244,6 +251,11 @@ def leader_send():
             return 'Data Sent to Leader'
         else:
             return 'Something went wrong sending the data, attempt to resend it'
+
+@app.route('/shareconfig', methods=['POST'])
+def share_config():
+    node.set_config(request.get_json())
+    return 'ok'
 
 
 @app.route('/datasent', methods=['GET'])
