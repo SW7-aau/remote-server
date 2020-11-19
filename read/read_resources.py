@@ -18,7 +18,7 @@ def arg_parsing():
     parser.add_argument('-s', '--send-frequency', type=int, default=6,
                         help='How many times resources should be read '
                              'before sent.')
-    parser.add_argument('-v', '--verbosity', action='count', default=1,
+    parser.add_argument('-v', '--verbosity', action='count', default=0,
                         help='Increase output verbosity.')
     parser.add_argument('-i', '--ip-address',
                         help='IP Adress of the current node.')
@@ -45,7 +45,9 @@ def send_node_status(json_object):
                'nodeid': 'testid',
                'ip-address': str(ip_address)}
     r = requests.post(url, json=json_object, headers=headers)
-    print(r.status_code)
+    if verbosity == 1:
+        print(json_object)
+        print(r.status_code)
 
 
 def send_resources_list():

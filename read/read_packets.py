@@ -110,9 +110,10 @@ def send_node_status(json_object):
                'package_type': '2',
                'nodeid': 'testid',
                'ip-address': str(ip_address)}
-    print(json_object)
     r = requests.post(url, json=json_object, headers=headers)
-    print(r.status_code)
+    if verbosity == 1:
+        print(json_object)
+        print(r.status_code)
 
 
 def send_packets_list():
