@@ -89,6 +89,7 @@ def unpack_and_send(queue):
         send_hash(hashed_resources)
 
     if packages_hash_status == 200:
+        print('Hashed packages is ', packages_hash_status)
         packages_status = send_to_gcp(packages[0][0], packages)
         send_hash(hashed_packages)
 
