@@ -50,12 +50,12 @@ def unpack_and_send(queue):
     :param queue: A send_queue from a follower
     :return: Nothing
     """
-    resources_status = 0
-    packages_status = 0
-    processes_status = 0
-    resources_hash_status = 0
-    packages_hash_status = 0
-    processes_hash_status = 0
+    resources_status = None
+    packages_status = None
+    processes_status = None
+    resources_hash_status = None
+    packages_hash_status = None
+    processes_hash_status = None
     resources = []
     packages = []
     processes = []
@@ -95,7 +95,7 @@ def unpack_and_send(queue):
         processes_status = send_to_gcp(processes[0][0], processes)
         send_hash(hashed_processes)
 
-    if (resources_status == 200 and packages_status == 200) or (resources_hash_status == 1 and packages_hash_status == 1):
+    if ((resources_status == 200 or resources_status is None) and (packages_status == 200 or packages_status is None)) or ((resources_hash_status == 1 or resources_hash_status is None) and (packages_hash_status == 1 or packages_hash_status is None)):
         url = 'http://' + queue[0][0]['ip_address'] + ':' + node.port + '/datasent'
         print("data sent response sent to " + url)
         headers = {'leader_ip_address': node.ip}
@@ -178,11 +178,14 @@ def send_to_gcp(old_headers, message):
                }
     r = requests.post(url, json=message, headers=headers)
 
-    if r.json()['message'] != 'ok':
+    if r.json()['message'] == 'ok':
+        return r.status_code
+    elif r.json()['message'] == 'Authorization token is expired':
         node.get_auth_token()
         return 0
-
-    return r.status_code
+    elif r.json()['message'] == 'Not authorized':
+        node.become_follower()
+        return 0
 
 
 @app.route('/')
@@ -250,11 +253,14 @@ def data_sent_response():
     Endpoint to tell follower data is sent to GCP, and can be deleted locally
     :return: "ok" if deleted, "Not leader" if called from follower node
     """
+    print('Data is sent')
+    print(node.send_queue)
     if request.headers['leader_ip_address'] == node.leader_ip:
         node.send_queue.clear()
         json_object = {'message': 'ok'}
     else:
         json_object = {'message': 'Not leader'}
+    print(node.send_queue)
     return json_object
 
 
