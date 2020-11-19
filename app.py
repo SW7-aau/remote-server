@@ -72,7 +72,6 @@ def unpack_and_send(queue):
         b64 = base64.encodebytes(json.dumps(resources).encode())
         hashed_resources = hashlib.sha256(b64).hexdigest()
         resources_hash_status = check_hash(resources[0][0], hashed_resources)
-        print(resources_hash_status)
 
     if packages:
         b64 = base64.encodebytes(json.dumps(packages).encode())
@@ -85,6 +84,7 @@ def unpack_and_send(queue):
         processes_hash_status = check_hash(processes[0][0], hashed_processes)
 
     if resources_hash_status == 200:
+        print('Hashed resources is ', resources_hash_status)
         resources_status = send_to_gcp(resources[0][0], resources)
         send_hash(hashed_resources)
 
