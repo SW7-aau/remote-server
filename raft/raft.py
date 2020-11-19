@@ -81,12 +81,12 @@ class Node:
         Get config from GCP
         Assume dicts come in the form of {'ip': '0/1'}
         """
-        self.config = requests.get('http://95.179.226.113:5000/get-config?cluster_id=' + self.cluster_id).json()
-        print(type(self.ip))
-        print(self.config)
+        url = f'http://95.179.226.113:5000/get-config?cluster_id=' \
+              f'{self.cluster_id}'
+        self.config = requests.get(url=url).json()
         active = int(self.config[self.ip])
         print(active)
-        if self.candidacy == False and active == 1:
+        if self.candidacy is False and active == 1:
             self.candidacy = True
             self.executor.submit(self.timer)
         elif active != 1:
@@ -109,7 +109,7 @@ class Node:
         """
         if self.verbosity == 1:
             print(self.ip, " became candidate.")
-        self.set_timer() # Reset time so candidate reattempts election if it didnt get elected or no one else became leader in meanwhile
+        self.set_timer()  # Reset time so candidate reattempts election if it didnt get elected or no one else became leader in meanwhile
         self.status = "Candidate"
         self.update_term(self.term + 1)
         self.voted = True
