@@ -72,6 +72,7 @@ def unpack_and_send(queue):
         b64 = base64.encodebytes(json.dumps(resources).encode())
         hashed_resources = hashlib.sha256(b64).hexdigest()
         resources_hash_status = check_hash(resources[0][0], hashed_resources)
+        print(resources_hash_status)
 
     if packages:
         b64 = base64.encodebytes(json.dumps(packages).encode())
@@ -123,7 +124,7 @@ def check_hash(old_headers, message):
                }
 
     r = requests.post(url, json=message, headers=headers)
-    print(type(r.status_code))
+
     if r.status_code == 409:
         print('Already in database')
         return 1
