@@ -123,7 +123,7 @@ def check_hash(old_headers, message):
                }
 
     r = requests.post(url, json=message, headers=headers)
-
+    print(type(r.status_code))
     if r.status_code == 409:
         return 1
     if r.json()['message'] == 'ok':
@@ -254,13 +254,11 @@ def data_sent_response():
     :return: "ok" if deleted, "Not leader" if called from follower node
     """
     print('Data is sent')
-    print(node.send_queue)
     if request.headers['leader_ip_address'] == node.leader_ip:
         node.send_queue.clear()
         json_object = {'message': 'ok'}
     else:
         json_object = {'message': 'Not leader'}
-    print(node.send_queue)
     return json_object
 
 
