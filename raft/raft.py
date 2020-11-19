@@ -83,7 +83,7 @@ class Node:
         """
         self.config = requests.get('http://95.179.226.113:5000/get-config?cluster_id=' + self.cluster_id).json()
         print(type(self.ip))
-        print(self.config[self.ip])
+        print(self.config)
         active = int(self.config[self.ip])
         print(active)
         if self.candidacy == False and active == 1:
