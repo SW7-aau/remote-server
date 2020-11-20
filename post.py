@@ -18,6 +18,6 @@ d = {
     '172.17.0.7': '0'
 }
 
-url = 'https://' + str(args.ip_address) + ':5000/updateconfig'
+url = 'http://' + str(args.ip_address) + ':5000/updateconfig'
 
 r = requests.post(url=url, json=d)
