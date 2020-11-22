@@ -166,6 +166,7 @@ class Node:
     def share_config(self):
         for server in [*self.config]:
             server = self.create_endpoint_url(server, self.port)
+            self.executor.submit(self.send_config, server)
 
     def send_config(self, server):
         follower_url = server + '/shareconfig'
