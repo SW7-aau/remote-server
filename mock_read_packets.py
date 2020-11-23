@@ -86,6 +86,5 @@ class read_packets():
                 'package_type': '2',
                 'nodeid': 'testid',
                 'ip-address': "127.0.0.1"}
-        print(json_object)
         r = self.requests.post(url, json=json_object, headers=headers)
         return r.status_code
