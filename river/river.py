@@ -9,7 +9,7 @@ import json
 class Node:
     def __init__(self, executor, args):
         """
-        Node in raft
+        Node in river
         :param executor: thread to run on
         :param args: args used to start program (ip, cluster, port)
         """

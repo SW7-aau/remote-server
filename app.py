@@ -1,7 +1,7 @@
 from copy import deepcopy
 from flask import Flask
 from flask import request
-from raft import raft
+from river import river
 import requests
 import concurrent.futures
 import hashlib
@@ -312,7 +312,7 @@ if __name__ == '__main__':
             print('Initializing Node')
         os.system("python3 read/read_packets.py -i \"eth0\" -a " + str(args.ip_address) + " -p " + str(args.port) + " &")
         os.system("python3 read/read_resources.py -i " + str(args.ip_address) + " -p " + str(args.port) + " &")
-        node = raft.Node(executor, args)
+        node = river.Node(executor, args)
         #executor.submit(node.timer)
         if args.verbosity == 1:
             print('Initializing done')
