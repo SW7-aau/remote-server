@@ -73,6 +73,8 @@ class Node:
         self.client_secret = '506c8044e28cbc71e989a1d9885d0e'
         self.client_id = '6e9fe75e4263ee84a4cadc1674182f'
         self.token = None
+        self.config_counter = 0
+        self.config_counter_amount = 8
 
     # Setup functions
     def fetch_config(self):
@@ -87,6 +89,7 @@ class Node:
         
     def set_config(self, config):
         self.config = config
+        self.share_config()
         active = int(self.config[self.ip])
         print(active)
         if self.candidacy is False and active == 1:
@@ -297,3 +300,9 @@ class Node:
             self.become_candidate()
         elif self.status == "Leader":
             self.heartbeat()
+            if self.config_counter < self.config_counter_amount:
+                self.config_counter += 1
+            else:
+                self.fetch_config()
+                self.config_counter = 0
+            
