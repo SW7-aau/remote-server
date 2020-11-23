@@ -94,6 +94,7 @@ class Node:
         active = int(self.config[self.ip])
         print(active)
         if self.candidacy is False and active == 1:
+            print('You should not be here')
             self.candidacy = True
             self.executor.submit(self.timer)
         elif active != 1:
