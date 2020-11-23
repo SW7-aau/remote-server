@@ -89,7 +89,8 @@ class Node:
         
     def set_config(self, config):
         self.config = config
-        self.share_config()
+        if self.status == 'Leader':
+            self.share_config()
         active = int(self.config[self.ip])
         print(active)
         if self.candidacy is False and active == 1:
