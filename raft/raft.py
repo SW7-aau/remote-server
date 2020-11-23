@@ -242,8 +242,8 @@ class Node:
     def set_timer(self):
         """
         Sets timer
-        If status is follower or candidate, set random timer between 0.15 and 0.3 secs
-        If status is leader, set timer to 0.05 secs
+        If status is follower or candidate, set random timer between 50 and 60 seconds
+        If status is leader, set timer to 40 seconds
         """
         self.time = time.time()
         if self.status == "Follower" or self.status == "Candidate":
