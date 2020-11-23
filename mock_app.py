@@ -1,11 +1,14 @@
-import mock_nodes
+import mock_api
 
 class requests():
     def post(self, url, json, headers):
+        result = 200
         if(url == "http://217.69.10.141:5000/node-resources"):
-            return self.Response(mock_nodes.node_resources(message=json))
+            result = mock_api.node_resources(message=json)
         if(url == "http://217.69.10.141:5000/node-network"):
-            return self.Response(mock_nodes.node_network(json))
+            result = mock_api.node_network(json)
+        return self.Response(result)
+
     class Response():
         def __init__(self, status_code):
             self.status_code = status_code
