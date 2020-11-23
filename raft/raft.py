@@ -1,36 +1,3 @@
-# Election currently not configuration file managing / join consensus implemntation.
-
-# ---- Leader behavior ------
-# Start of new term (that last arbitary duration) (should be numbered current_term_number, increasing by an integer each term, to give new leader presumed highest term number)
-# Initiate Election
-# Request leadership, multithread requestVote RPC to all nodes.
-# Response from majority of nodes in log from db (length divide by 2 and round up), accepted as leader and send confirmation out to other nodes to say its new leader
-# and prevent further elections
-# During split vote, reattempt election
-
-# Leaders send periodic heartbeats to followers with appendEntries RPC.
-# During any type of requests to followers, if the leaders current term is out of date, revert to follower immediately.
-
-# ----- Follower behavior ------
-# Response to leader, constant appendEntries RPC:
-# - Update current term if it is different
-# - If a follower recives a request from old term number, reject it.
-# election_timeout: Timeout no leader request, Initiate Election - server transitions to candidate state
-
-# Candidate, requestVote RPC:
-# A server will vote for at most one candidate in a given term, in a first comes first serves basis
-# If candidate received appendEntries request from a term that is equal to or larger than the term the candidate tries to propose, shift back to follower.
-
-
-# Proof of concept with five nodes
-
-
-# Environment setup for flask APIs
-# set FLASK_ENV=development
-# set FLASK_APP=logless_raft.py
-# flask run -p (desired port number, ex. 5001)
-
-
 import requests
 import time
 from random import Random
@@ -198,8 +165,6 @@ class Node:
     def start_election(self):
         """
         Starts a thread for each element in config file
-        Lacks code for stopping threads after an election have taken place.
-        if they can't reach a node though.
         :return:
         """
         if self.verbosity == 1:
