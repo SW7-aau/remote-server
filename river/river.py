@@ -263,6 +263,7 @@ class Node:
         """
         if self.status == "Follower" or self.status == "Candidate":
             self.become_candidate()
+            self.config_counter = 0
         elif self.status == "Leader":
             self.heartbeat()
             if self.config_counter < self.config_counter_amount:
