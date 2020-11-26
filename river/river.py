@@ -249,8 +249,10 @@ class Node:
         If status is leader, set timer to 40 seconds
         """
         self.time = time.time()
-        if self.status == "Follower" or self.status == "Candidate":
+        if self.status == "Follower":
             self.timeout = self.time + self.rand.uniform(50, 60)
+        elif self.status == "Candidate":
+            self.timeout = self.time + self.rand.uniform(2, 3)
         elif self.status == "Leader":
             self.timeout = self.time + 40
         
