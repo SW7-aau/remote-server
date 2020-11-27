@@ -159,7 +159,7 @@ class Node:
         """
         response = int(requests.get(url + '/requestvote',
                                     headers=self.create_headers(),
-                                    timeout=0.15).text)
+                                    timeout=0.5).text)
         self.votes += response
         if self.verbosity == 1:
             print('votes: ', str(self.votes))
