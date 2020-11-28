@@ -294,7 +294,7 @@ def information_queue():
 
 # Voting function
 @app.route('/requestvote', methods=['GET'])
-def request_vote():
+def send_vote():
     if node.verbosity == 1:
         print('Vote request received')
     if check_headers(request.headers):

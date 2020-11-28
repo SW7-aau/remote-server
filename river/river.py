@@ -97,8 +97,8 @@ class Node:
         """
         if self.verbosity == 1:
             print(self.ip, " became leader with ", str(self.votes), " votes.")
-        self.set_timer()
         self.status = "Leader"
+        self.set_timer()
         self.get_auth_token()
         self.heartbeat()
 
