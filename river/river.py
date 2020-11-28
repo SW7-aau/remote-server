@@ -71,8 +71,8 @@ class Node:
         """
         Sets timer and status as follower
         """
-        self.set_timer()
         self.status = "Follower"
+        self.set_timer()
         # print(str(self.ip) + " became follower.")
 
     def become_candidate(self):
@@ -83,8 +83,8 @@ class Node:
         """
         if self.verbosity == 1:
             print(self.ip, " became candidate.")
-        self.set_timer()  # Reset time so candidate reattempts election if it didnt get elected or no one else became leader in meanwhile
         self.status = "Candidate"
+        self.set_timer()  # Reset time so candidate reattempts election if it didnt get elected or no one else became leader in meanwhile
         self.update_term(self.term + 1)
         self.voted = True
         self.votes = 1
