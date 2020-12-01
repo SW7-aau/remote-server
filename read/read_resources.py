@@ -41,9 +41,7 @@ def send_node_status(json_object):
     url = "http://"+ str(args.ip_address) +":"+str(args.port)+"/storedata"
     headers = {'Content-type': 'application/json',
                'Accept': 'text/plain',
-               'package_type': '1',
-               'nodeid': 'testid',
-               'ip-address': str(ip_address)}
+               'package_type': '1'}
     r = requests.post(url, json=json_object, headers=headers)
     if verbosity == 1:
         print(json_object)

@@ -2,8 +2,6 @@ import argparse
 import pyshark
 import requests
 import sys
-sys.path.insert(1, 'scheduler')
-import cyclic_executive
 
 
 packets_dict_list = []
@@ -49,23 +47,6 @@ def ip_to_dict(packet, protocol):
     return d
 
 
-def other_to_dict(packet, layer_name):
-    d = {}
-    if layer_name == 'llc':  # Protocol = STP
-        d = {'timestamp': packet.sniff_timestamp.split('.')[0],
-             'protocol': packet[2].layer_name.upper(),
-             'size': str(packet.length), 'info': {}}
-    elif layer_name == 'arp' or layer_name == 'eapol':  # Protocol = ARP or EAPOL
-        d = {'timestamp': packet.sniff_timestamp.split('.')[0],
-             'protocol': packet[1].layer_name.upper(),
-             'size': str(packet.length), 'info': {}}
-
-    d['info']['dst_resolved'] = str(packet[0].addr_oui_resolved)
-    d['info']['src_resolved'] = str(packet[0].src_oui_resolved)
-
-    return d
-
-
 def get_packets(packet, verbosity):
     d = {}
     try:
@@ -84,21 +65,8 @@ def get_packets(packet, verbosity):
                 print('Unknown package')
 
     except AttributeError:
-        layer_name = str(packet[1].layer_name)
-        # d = other_to_dict(packet, layer_name)
-
-        if verbosity == 1:
-            if layer_name == 'llc':  # Protocol = STP
-                print('STP')
-            elif layer_name == 'arp':  # Protocol = ARP
-                print('ARP')
-            elif layer_name == 'eapol':  # Protocol = EAPOL
-                print('EAPOL')
-            else:
-                print('Unknown package')
-
-    if not d and verbosity == 1:  # Used to find undiscovered protocols
-        print("Empty dict")
+        if verbosity == 1:  # Used to find undiscovered protocols
+            print("Empty dict")
 
     return d
 
@@ -107,9 +75,7 @@ def send_node_status(json_object):
     url = "http://"+ ip_address + ":" + str(port) + "/storedata"
     headers = {'Content-type': 'application/json',
                'Accept': 'text/plain',
-               'package_type': '2',
-               'nodeid': 'testid',
-               'ip-address': str(ip_address)}
+               'package_type': '2'}
     r = requests.post(url, json=json_object, headers=headers)
     if verbosity == 1:
         print(json_object)
@@ -135,7 +101,6 @@ if __name__ == '__main__':
         print('Starting sniffing...')
 
     for n in capture.sniff_continuously():
-        # packets_dict_list.append(get_packets(packet=n, verbosity=verbosity))
         get_packets(packet=n, verbosity=verbosity)
 
         if len(packets_dict_list) == args.send_frequency:

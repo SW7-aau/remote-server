@@ -27,6 +27,7 @@ def arg_parsing():
 
     return parser.parse_args()
 
+
 def check_headers(headers):
     if int(headers['term']) < int(node.term):
         return False
