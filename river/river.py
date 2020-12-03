@@ -87,7 +87,7 @@ class Node:
         self.voted = True
         self.votes = 1
         self.start_election()
-        
+
     def become_leader(self):
         """
         Resets timer and sets status to leader
