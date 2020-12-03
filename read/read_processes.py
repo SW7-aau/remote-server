@@ -1,14 +1,10 @@
-#Reads the states of processes on the machine.
-#See read_resources.py for structural documentation.
-
 import time
 import psutil
 import requests
 import argparse
 import sys
 
-import cyclic_executive
-
+from scheduler import cyclic_executive
 
 ip_address = requests.get('https://api.ipify.org').text
 processes_dict_list = []
@@ -68,5 +64,4 @@ if __name__ == '__main__':
                                               send_frequency=args.send_frequency,
                                               functions=functions)
 
-    while True:
-        cyclic.run()
+    cyclic.run()

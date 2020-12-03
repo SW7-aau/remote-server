@@ -1,12 +1,12 @@
 import signal
 
-#Scheduler class to be instantiated as part of an application
-#Arguments given by said application.
-#getattr is used to access those functions, with function 1 always being a getter while function 2 is a sender.
+
 class CyclicExecutive:
     def __init__(self, verbosity, cycle_duration, send_frequency,
                  functions):
         """
+        Scheduler class to be instantiated as part of an application
+        Arguments given by said application.
         :param verbosity: If scheduler should be verbose
         :param cycle_duration: How often functions[1] should be called
         :param send_frequency: How often functions[1] should be called before
@@ -25,15 +25,22 @@ class CyclicExecutive:
         self.task_completed = False
 
     def wait_for_interrupt(self):
+        """
+        Pauses the program until the signal is received
+        """
         self.task_completed = True
         signal.pause()
 
     def job(self, counter):
-        #Read metrics
+        """
+        getattr is used to access those functions, with functions[0] being the python script, functions[1] being a getter, and functions[2] being a sender.
+        :param counter: Counter to see if data should be send
+        """
+        # Read metrics
         getattr(self.functions[0], self.functions[1])()
         if self.verbosity == 1:
             print('Resources read')
-        #Send Metrics
+        # Send Metrics
         if counter % self.send_frequency == 0:
             getattr(self.functions[0], self.functions[2])()
             if self.verbosity == 1:

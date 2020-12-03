@@ -25,7 +25,7 @@ class read_packets():
     packets_dict_list = []
     requests = mock_requests.requests()
 
-    def other_to_dict(packet, layer_name):
+    def other_to_dict(self, packet, layer_name):
         d = {}
         if layer_name == 'llc':  # Protocol = STP
             d = {'timestamp': packet.sniff_timestamp.split('.')[0],

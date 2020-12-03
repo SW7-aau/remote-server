@@ -3,14 +3,13 @@ import psutil
 import requests
 import argparse
 import sys
-
+sys.path.insert(1, 'scheduler')
 import cyclic_executive
-
 
 ip_address = requests.get('https://api.ipify.org').text
 resources_dict_list = []
 
-#Scheduler options
+
 def arg_parsing():
     parser = argparse.ArgumentParser(prog='Read Resources',
                                      description='Read current resource usage.')
@@ -19,33 +18,36 @@ def arg_parsing():
     parser.add_argument('-s', '--send-frequency', type=int, default=6,
                         help='How many times resources should be read '
                              'before sent.')
-    parser.add_argument('-v', '--verbosity', action='count', default=1,
+    parser.add_argument('-v', '--verbosity', action='count', default=0,
                         help='Increase output verbosity.')
-
+    parser.add_argument('-i', '--ip-address',
+                        help='IP Adress of the current node.')
+    parser.add_argument('-p', '--port', type=int,
+                        help='The port the current node is using.')
     return parser.parse_args()
 
-#Reads the resource stats of the machine this application is running on.
+
 def get_resources():
     timestamp = str(time.time()).split('.')[0]
     status_struct = {'timestamp': timestamp,
                      'CPU%': str(psutil.cpu_percent()),
                      'RAM%': str(psutil.virtual_memory().percent)}
-    # Bandwith not included atm.
+    # Bandwidth not included atm.
     print(status_struct)
     resources_dict_list.append(status_struct)
 
-#Sends current recorded metrics to sidecar (I hope)
+
 def send_node_status(json_object):
-    url = "http://172.17.0.8:5000/storedata"
+    url = "http://"+ str(args.ip_address) +":"+str(args.port)+"/storedata"
     headers = {'Content-type': 'application/json',
                'Accept': 'text/plain',
-               'package_type': '1',
-               'nodeid': 'testid',
-               'ip-address': str(ip_address)}
+               'package_type': '1'}
     r = requests.post(url, json=json_object, headers=headers)
-    print(r.status_code)
+    if verbosity == 1:
+        print(json_object)
+        print(r.status_code)
 
-#Clears batch of metric reading after calling send_node_status
+
 def send_resources_list():
     send_node_status(resources_dict_list)
     resources_dict_list.clear()
@@ -62,6 +64,4 @@ if __name__ == '__main__':
                                               send_frequency=args.send_frequency,
                                               functions=functions)
 
-    #Why do we have an infinite while loop here when the scheduler already has one?
-    while True:
-        cyclic.run()
+    cyclic.run()

@@ -3,7 +3,6 @@ import pyshark
 import requests
 
 
-ip_address = requests.get('https://api.ipify.org').text
 packets_dict_list = []
 
 
@@ -15,8 +14,12 @@ def arg_parsing():
                              'used to capture network packets.')
     parser.add_argument('-s', '--send-frequency', type=int, default=50,
                         help='How many packets should be sniffed before sent')
-    parser.add_argument('-v', '--verbosity', type=int, default=1,
+    parser.add_argument('-v', '--verbosity', type=int, default=0,
                         help='Increase output verbosity.')
+    parser.add_argument('-a', '--ip-address',
+                        help='IP Adress of the current node.')
+    parser.add_argument('-p', '--port', type=int,
+                        help='The port the current node is using.')
 
     return parser.parse_args()
 
@@ -33,31 +36,13 @@ def ip_to_dict(packet, protocol):
         d['info']['layer'] = packet[2].layer_name
     else:
         d['info']['dst'] = str(packet[1].dst)
-        d['info']['dst_resolved'] = str(packet[0].addr_oui_resolved)
+        #d['info']['dst_resolved'] = str(packet[0].addr_oui_resolved)
         d['info']['dst_port'] = packet[2].dstport
         d['info']['src'] = str(packet[1].src)
-        d['info']['src_resolved'] = str(packet[0].src_oui_resolved)
+        #d['info']['src_resolved'] = str(packet[0].src_oui_resolved)
         d['info']['src_port'] = packet[2].srcport
         if protocol == '17':  # Protocol = UPD  ---- Else TCP
             d['info']['layer'] = packet[3].layer_name
-
-    return d
-
-
-def other_to_dict(packet, layer_name):
-    d = {}
-    if layer_name == 'llc':  # Protocol = STP
-        d = {'timestamp': packet.sniff_timestamp.split('.')[0],
-             'protocol': packet[2].layer_name.upper(),
-             'size': str(packet.length), 'info': {}}
-    elif layer_name == 'arp' or layer_name == 'eapol':  # Protocol = ARP or EAPOL
-        d = {'timestamp': packet.sniff_timestamp.split('.')[0],
-             'protocol': packet[1].layer_name.upper(),
-             'size': str(packet.length), 'info': {}}
-
-    d['info']['dst_resolved'] = str(packet[0].addr_oui_resolved)
-    d['info']['src_resolved'] = str(packet[0].src_oui_resolved)
-
     return d
 
 
@@ -79,35 +64,21 @@ def get_packets(packet, verbosity):
                 print('Unknown package')
 
     except AttributeError:
-        layer_name = str(packet[1].layer_name)
-        # d = other_to_dict(packet, layer_name)
-
-        if verbosity == 1:
-            if layer_name == 'llc':  # Protocol = STP
-                print('STP')
-            elif layer_name == 'arp':  # Protocol = ARP
-                print('ARP')
-            elif layer_name == 'eapol':  # Protocol = EAPOL
-                print('EAPOL')
-            else:
-                print('Unknown package')
-
-    if not d and verbosity == 1:  # Used to find undiscovered protocols
-        print("Empty dict")
+        if verbosity == 1:  # Used to find undiscovered protocols
+            print("Empty dict")
 
     return d
 
 
 def send_node_status(json_object):
-    url = "http://127.0.0.1:5000/storedata"
+    url = "http://"+ ip_address + ":" + str(port) + "/storedata"
     headers = {'Content-type': 'application/json',
                'Accept': 'text/plain',
-               'package_type': '2',
-               'nodeid': 'testid',
-               'ip-address': str(ip_address)}
-    print(json_object)
+               'package_type': '2'}
     r = requests.post(url, json=json_object, headers=headers)
-    print(r.status_code)
+    if verbosity == 1:
+        print(json_object)
+        print(r.status_code)
 
 
 def send_packets_list():
@@ -120,6 +91,8 @@ if __name__ == '__main__':
     args = arg_parsing()
 
     verbosity = 1 if args.verbosity != 0 else args.verbosity
+    ip_address = args.ip_address
+    port = args.port
 
     capture = pyshark.LiveCapture(interface=args.interface)
 
@@ -127,7 +100,6 @@ if __name__ == '__main__':
         print('Starting sniffing...')
 
     for n in capture.sniff_continuously():
-        # packets_dict_list.append(get_packets(packet=n, verbosity=verbosity))
         get_packets(packet=n, verbosity=verbosity)
 
         if len(packets_dict_list) == args.send_frequency:
