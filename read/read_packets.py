@@ -1,7 +1,6 @@
 import argparse
 import pyshark
 import requests
-import sys
 
 
 packets_dict_list = []

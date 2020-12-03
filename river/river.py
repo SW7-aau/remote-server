@@ -1,10 +1,8 @@
 import requests
 import time
 from random import Random
-import sys
 import hashlib
 import base64
-import json
 
 class Node:
     def __init__(self, executor, args):
@@ -52,7 +50,7 @@ class Node:
               f'{self.cluster_id}'
         cfg = requests.get(url=url).json()
         self.set_config(cfg)
-        
+
     def set_config(self, config):
         self.config = config
         #if self.status == 'Leader':
@@ -134,7 +132,7 @@ class Node:
                    'ip_address': self.ip,
                    'term': str(self.term),
                    'status': self.status}
-        r = requests.get(url=follower_url, headers=headers, timeout=2)
+        requests.get(url=follower_url, headers=headers, timeout=2)
 
     def share_config(self):
         for server in [*self.config]:
@@ -149,7 +147,7 @@ class Node:
                    'ip_address': self.ip,
                    'term': str(self.term),
                    'status': self.status}
-        r = requests.post(url=follower_url, json=self.config, headers=headers)
+        requests.post(url=follower_url, json=self.config, headers=headers)
 
     def request_vote(self, url):
         """

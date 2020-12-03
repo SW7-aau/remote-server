@@ -52,21 +52,16 @@ def unpack_and_send(queue):
     """
     resources_status = None
     packages_status = None
-    processes_status = None
     resources_hash_status = None
     packages_hash_status = None
-    processes_hash_status = None
     resources = []
     packages = []
-    processes = []
 
     for item in queue:
         if item[0]['package_type'] == '1':
             resources.append(item)
         elif item[0]['package_type'] == '2':
             packages.append(item)
-        elif item[0]['package_type'] == '3':
-            processes.append(item)
 
     if resources:
         b64 = base64.encodebytes(json.dumps(resources).encode())
@@ -78,11 +73,6 @@ def unpack_and_send(queue):
         hashed_packages = hashlib.sha256(b64).hexdigest()
         packages_hash_status = check_hash(packages[0][0], hashed_packages)
 
-    if processes:
-        b64 = base64.encodebytes(json.dumps(processes).encode())
-        hashed_processes = hashlib.sha256(b64).hexdigest()
-        processes_hash_status = check_hash(processes[0][0], hashed_processes)
-
     if resources_hash_status == 200:
         resources_status = send_to_gcp(resources[0][0], resources)
         send_hash(hashed_resources)
@@ -90,10 +80,6 @@ def unpack_and_send(queue):
     if packages_hash_status == 200:
         packages_status = send_to_gcp(packages[0][0], packages)
         send_hash(hashed_packages)
-
-    if processes_hash_status == 200:
-        processes_status = send_to_gcp(processes[0][0], processes)
-        send_hash(hashed_processes)
 
     if ((resources_status == 200 or resources_status is None) and (packages_status == 200 or packages_status is None)) or ((resources_hash_status == 1 or resources_hash_status is None) and (packages_hash_status == 1 or packages_hash_status is None)):
         url = 'http://' + queue[0][0]['ip_address'] + ':' + node.port + '/datasent'
@@ -165,8 +151,6 @@ def send_to_gcp(old_headers, message):
         url = 'http://95.179.226.113:5000/node-resources'
     elif old_headers['package_type'] == '2':
         url = 'http://95.179.226.113:5000/node-network'
-    elif old_headers['package_type'] == '3':
-        url = 'http://95.179.226.113:5000/node-processess'
 
     else:
         return
