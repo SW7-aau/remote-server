@@ -10,7 +10,8 @@ import mock_nodes
 class requests():
     def post(self, url, json, headers):
         print()
-    def get(self, url, json, headers)
+    def get(self, url, json, headers):
+        print()
     class Response():
         def __init__(self, status_code):
             self.status_code = status_code
@@ -42,11 +43,6 @@ def send_data():
     return 'ok'
 
 def unpack_and_send(queue):
-    """
-    Unpacks a send_queue and sends it to GCP
-    :param queue: A send_queue from a follower
-    :return: Nothing
-    """
     resources_status = None
     packages_status = None
     resources_hash_status = None
@@ -91,14 +87,6 @@ def unpack_and_send(queue):
 
 
 def check_hash(old_headers, message):
-    """
-    Checks if the hash is already in the database at GCP
-    :param old_headers: Headers from the send_queue
-    :param message: A hashed version of the send_queue
-    :return: status_code from the request if successful, 1 if hash exists in
-     database, 0 if access token has expired
-    """
-
     url = "http://95.179.226.113:5000/check-hash"  # node hash url
     headers = {'Content_Type': 'application/json',
                'Accept': 'text/plain',
@@ -136,12 +124,6 @@ def send_hash(message):
     return r.status_code
 
 def send_to_gcp(old_headers, message):
-    """
-    Sends the send_queue to GCP
-    :param old_headers: Headers from the send_queue
-    :param message: The data to be stored in the database
-    :return: status_code from the request
-    """
     if old_headers['package_type'] == '1':
         url = 'http://95.179.226.113:5000/node-resources'
     elif old_headers['package_type'] == '2':
