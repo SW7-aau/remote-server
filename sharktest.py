@@ -1,5 +1,5 @@
 import pyshark
 
-capture = pyshark.LiveCapture(interface='eth0')
+capture = pyshark.LiveCapture()
 for n in capture.sniff_continuously():
     print(n)
