@@ -175,6 +175,7 @@ def send_to_gcp(old_headers, message):
 
 @app.route('/')
 def index():
+    print(node.ip)
     return 'Server Works!'
 
 
@@ -293,13 +294,8 @@ def send_vote():
 if __name__ == '__main__':
     args = arg_parsing()
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        if args.verbosity == 1:
-            print('Initializing Node')
         os.system("python3 read/read_packets.py -i \"eth0\" -a " + str(args.ip_address) + " -p " + str(args.port) + " &")
         os.system("python3 read/read_resources.py -i " + str(args.ip_address) + " -p " + str(args.port) + " &")
         node = river.Node(executor, args)
-        #executor.submit(node.timer)
-        if args.verbosity == 1:
-            print('Initializing done')
         app.debug = False
         app.run(host=node.ip, port=node.port)

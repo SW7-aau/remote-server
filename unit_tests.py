@@ -3,7 +3,11 @@ import time
 import mock_read_resources
 #import mock_read_process
 #import mock_read_packets
+from flask import Flask
+from app import app
+import concurrent.futures
 
+import mock_node
 
 class TestStringMethods(unittest.TestCase):
 
@@ -44,6 +48,18 @@ class TestStringMethods(unittest.TestCase):
         rr = mock_read_resources.read_resources()
         result = rr.send_node_status([])
         self.assertTrue(result == 200)
+
+    def test_become_leader(self):
+        self.node.become_leader()
+
+
+    def setUp(self):
+        parser = mock_node.argparse.ArgumentParser()
+        mock_node.arg_parsing(parser)
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            args = parser.parse_args(['-i', '1.2.3', '-c', '3000', '-p', '1000'])
+            print(str(args))
+            self.node = mock_node.node_mock(executor, args)
 
 if __name__ == '__main__':
     unittest.main()
