@@ -2,7 +2,7 @@ import unittest
 import time
 import mock_read_resources
 #import mock_read_process
-#import mock_read_packets
+import mock_read_packets
 
 
 class TestStringMethods(unittest.TestCase):
@@ -44,6 +44,11 @@ class TestStringMethods(unittest.TestCase):
         rr = mock_read_resources.read_resources()
         result = rr.send_node_status([])
         self.assertTrue(result == 200)
+
+    def test_packets_sending(self):
+        rp = mock_read_packets.read_packets()
+        packet = 
+        rp.get_packets()
 
 if __name__ == '__main__':
     unittest.main()

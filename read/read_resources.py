@@ -32,7 +32,6 @@ def get_resources():
     status_struct = {'timestamp': timestamp,
                      'CPU%': str(psutil.cpu_percent()),
                      'RAM%': str(psutil.virtual_memory().percent)}
-    # Bandwidth not included atm.
     print(status_struct)
     resources_dict_list.append(status_struct)
 

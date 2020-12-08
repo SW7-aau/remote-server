@@ -50,7 +50,7 @@ class read_packets():
         return d
 
     def send_node_status(self, json_object):
-        url = "http://127.0.0.1:5000/sendtohost"
+        url = "http://127.0.0.1:5000/storedata"
         headers = {'Content-type': 'application/json',
                 'Accept': 'text/plain',
                 'package_type': '2'}
