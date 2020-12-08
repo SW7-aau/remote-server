@@ -47,8 +47,10 @@ class TestStringMethods(unittest.TestCase):
 
     def test_packets_sending(self):
         rp = mock_read_packets.read_packets()
-        packet = 
-        rp.get_packets()
+        packet = {}
+        rp.get_packets(packet, 0)
+        result = rp.send_node_status(rp.packets_dict_list)
+        self.assertTrue(result == 200)
 
 if __name__ == '__main__':
     unittest.main()
