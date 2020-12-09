@@ -15,7 +15,7 @@ class TestStringMethods(unittest.TestCase):
 
     def test_resource_missing_message_timestamp(self):
         rr = mock_read_resources.read_resources()
-        message = [{'CPU%': "50%", 'RAM': "30%"}]
+        message = [{'CPU%': "50%", 'RAM%': "30%"}]
         result = rr.send_node_status(message)
         self.assertFalse(result == 200)
 

@@ -65,7 +65,7 @@ def information_queue(request):
 ### NEW FUNCTIONS ###
 def check_resources(messages):
     for m in messages:
-        if 'timestamp' in m and 'CPU%' in m and 'RAM' in m:
+        if 'timestamp' in m and 'CPU%' in m and 'RAM%' in m:
             return True
         return False
 
