@@ -46,7 +46,6 @@ class TestStringMethods(unittest.TestCase):
         self.assertFalse(result == 200)
 
     def test_packets_sending(self):
-        print('not missing')
         rp = mock_read_packets.read_packets()
         packets = [
             {
@@ -63,12 +62,10 @@ class TestStringMethods(unittest.TestCase):
                 "layer":"NULL"
             }
         ]
-        #print(packets)
         result = rp.send_node_status(packets)
         self.assertTrue(result == 200)
 
     def test_packets_missing_info(self):
-        print('missing')
         rp = mock_read_packets.read_packets()
         packets = [
             {
@@ -84,103 +81,8 @@ class TestStringMethods(unittest.TestCase):
                 "layer":"NULL"
             }
         ]
-        #print(packets)
         result = rp.send_node_status(packets)
         self.assertFalse(result == 200)
-
-testpackets = [
-   {
-      "id":"172.17.0.6",
-      "timestamp":"2020-11-23 12:41:52",
-      "protocol":"TCP",
-      "size":"66",
-      "dst":"172.17.0.7",
-      "dst_resolved":"NULL",
-      "dst_port":"50572",
-      "src_resolved":"NULL",
-      "src":"172.17.0.6",
-      "src_port":"5000",
-      "layer":"NULL"
-   },
-   {
-      "id":"172.17.0.6",
-      "timestamp":"2020-11-23 12:41:53",
-      "protocol":"TCP",
-      "size":"74",
-      "dst":"172.17.0.6",
-      "dst_resolved":"NULL",
-      "dst_port":"5000",
-      "src_resolved":"NULL",
-      "src":"172.17.0.7",
-      "src_port":"50620",
-      "layer":"NU LL"
-   },
-   {
-      "id":"172.17.0.6",
-      "timestamp":"2020-11-23 12:41:53",
-      "protocol":"TCP",
-      "size":"74",
-      "dst":"172.17.0.7",
-      "dst_resolved":"NULL",
-      "dst_port":"50620",
-      "src_resolved":"NULL",
-      "src":"172.17.0.6",
-      "src_port":"5000",
-      "layer":"NULL"
-   },
-   {
-      "id":"172.17.0.6",
-      "timestamp":"2020-11-23 12:41:53",
-      "protocol":"TCP",
-      "size":"66",
-      "dst":"172.17.0.6",
-      "dst_resolved":"NULL",
-      "dst_port":"5000",
-      "src_resolved":"NULL",
-      "src":"172.17.0.7",
-      "src_port":"50620",
-      "layer ":"NULL"
-   },
-   {
-      "id":"172.17.0.6",
-      "timestamp":"2020-11-23 12:41:53",
-      "protocol":"TCP",
-      "size":"251",
-      "dst":"172.17.0.6",
-      "dst_resolved":"NULL",
-      "dst_port":"5000",
-      "src_resolved":"NULL",
-      "src":"172.17.0.7",
-      "src_port":"50620",
-      "l ayer":"NULL"
-   },
-   {
-      "id":"172.17.0.6",
-      "timestamp":"2020-11-23 12:41:53",
-      "protocol":"TCP",
-      "size":"66",
-      "dst":"172.17.0.7",
-      "dst_resolved":"NULL",
-      "dst_port":"50620",
-      "src_resolved":"NULL",
-      "src":"172.17.0.6",
-      "src_port":"5000",
-      "layer":"NULL"
-   },
-   {
-      "id":"172.17.0.6",
-      "timestamp":"2020-11-23 12:41:53",
-      "protocol":"TCP",
-      "size":"83",
-      "dst":"172.17.0.7",
-      "dst_resolved":"NULL",
-      "dst_port":"50620",
-      "src_resolved":"NULL",
-      "src":"172.17.0.6",
-      "src_port":"500 0",
-      "layer":"NULL"
-   }
-]  
 
 if __name__ == '__main__':
     unittest.main()
