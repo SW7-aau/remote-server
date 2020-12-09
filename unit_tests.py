@@ -64,8 +64,7 @@ class TestStringMethods(unittest.TestCase):
             }
         ]
         #print(packets)
-        rp.packets_dict_list.append(packets)
-        result = rp.send_node_status(rp.packets_dict_list)
+        result = rp.send_node_status(packets)
         self.assertTrue(result == 200)
 
     def test_packets_missing_info(self):
@@ -86,8 +85,7 @@ class TestStringMethods(unittest.TestCase):
             }
         ]
         #print(packets)
-        rp.packets_dict_list.append(packets)
-        result = rp.send_node_status(rp.packets_dict_list)
+        result = rp.send_node_status(packets)
         self.assertFalse(result == 200)
 
 testpackets = [

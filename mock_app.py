@@ -70,7 +70,7 @@ def check_resources(messages):
         return False
 
 def check_packets(messages):
-    #print(messages)
+    print(messages)
     messages = messages[0]
     for m in messages:
         if m['protocol'] == 'TCP':
