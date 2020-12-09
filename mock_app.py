@@ -81,5 +81,3 @@ def check_packets(messages):
             if 'dst' in m and 'dst_resolved' in m and 'src' in m and 'src_resolved' in m and 'layer' in m:
                 return True
         return False
-
-
