@@ -78,11 +78,11 @@ def check_packets(messages):
                 print(1)
                 print(m)
                 return False
-        if m['protocol'] == 'UDP':
+        elif m['protocol'] == 'UDP':
             if not ('dst' in m and 'dst_resolved' in m and 'dst_port' in m and 'src' in m and 'src_resolved' in m and 'src_port' in m and 'layer' in m):
                 print(2)
                 return False
-        if m['protocol'] == 'IGMP':
+        elif m['protocol'] == 'IGMP':
             if not ('dst' in m and 'dst_resolved' in m and 'src' in m and 'src_resolved' in m and 'layer' in m):
                 print(3)
                 return False
