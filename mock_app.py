@@ -72,7 +72,6 @@ def check_resources(messages):
 def check_packets(messages):
     print(messages)
     messages = messages[0]
-    print(messages)
     for m in messages:
         if m['protocol'] == '6':
             if 'dst' in m and 'dst_resolved' in m and 'dst_port' in m and 'src' in m and 'src_resolved' in m and 'src_port' in m:
