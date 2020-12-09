@@ -73,13 +73,13 @@ def check_packets(messages):
     print(messages)
     messages = messages[0]
     for m in messages:
-        if m['protocol'] == '6':
+        if m['protocol'] == 'TCP':
             if not ('dst' in m and 'dst_resolved' in m and 'dst_port' in m and 'src' in m and 'src_resolved' in m and 'src_port' in m):
                 return False
-        if m['protocol'] == '17':
+        if m['protocol'] == 'UDP':
             if not ('dst' in m and 'dst_resolved' in m and 'dst_port' in m and 'src' in m and 'src_resolved' in m and 'src_port' in m and 'layer' in m):
                 return False
-        if m['protocol'] == '2':
+        if m['protocol'] == 'IGMP':
             if not ('dst' in m and 'dst_resolved' in m and 'src' in m and 'src_resolved' in m and 'layer' in m):
                 return False
         else: return False
