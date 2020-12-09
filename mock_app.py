@@ -54,7 +54,7 @@ def information_queue(request):
         if not check_resources(request.get_json()):
             return 'Invalid Message'
     elif request.headers['package_type'] == '2':
-        if not check_packets():
+        if not check_packets(request.get_json()):
             return 'Invalid Message'
     else:
         return 'Invalid Package Type'
