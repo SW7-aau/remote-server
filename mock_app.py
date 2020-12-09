@@ -70,13 +70,13 @@ def check_resources(messages):
         return False
 
 def check_packets(messages):
-    print(messages)
+    #print(messages)
     messages = messages[0]
     for m in messages:
         if m['protocol'] == 'TCP':
             if not ('dst' in m and 'dst_resolved' in m and 'dst_port' in m and 'src' in m and 'src_resolved' in m and 'src_port' in m):
-                print(1)
-                print(m)
+                #print(1)
+                #print(m)
                 return False
         elif m['protocol'] == 'UDP':
             if not ('dst' in m and 'dst_resolved' in m and 'dst_port' in m and 'src' in m and 'src_resolved' in m and 'src_port' in m and 'layer' in m):

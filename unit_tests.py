@@ -63,6 +63,7 @@ class TestStringMethods(unittest.TestCase):
                 "layer":"NULL"
             }
         ]
+        print(packets)
         rp.packets_dict_list.append(packets)
         result = rp.send_node_status(rp.packets_dict_list)
         self.assertTrue(result == 200)
@@ -84,6 +85,7 @@ class TestStringMethods(unittest.TestCase):
                 "layer":"NULL"
             }
         ]
+        print(packets)
         rp.packets_dict_list.append(packets)
         result = rp.send_node_status(rp.packets_dict_list)
         self.assertFalse(result == 200)
