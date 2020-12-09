@@ -55,8 +55,8 @@ class TestStringMethods(unittest.TestCase):
     def test_packets_missing_info(self):
         rp = mock_read_packets.read_packets()
         packets = testpackets
-        for p in packets:
-            del p['src']
+        #for p in packets:
+        #    del p['src']
         rp.packets_dict_list.append(packets)
         result = rp.send_node_status(rp.packets_dict_list)
         self.assertFalse(result == 200)
