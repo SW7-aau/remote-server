@@ -46,6 +46,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertFalse(result == 200)
 
     def test_packets_sending(self):
+        print('not missing')
         rp = mock_read_packets.read_packets()
         packets = [
             {
@@ -67,6 +68,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertTrue(result == 200)
 
     def test_packets_missing_info(self):
+        print('missing')
         rp = mock_read_packets.read_packets()
         packets = [
             {
