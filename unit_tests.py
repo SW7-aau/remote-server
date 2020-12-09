@@ -3,7 +3,6 @@ import time
 import mock_read_resources
 #import mock_read_process
 import mock_read_packets
-from copy import deepcopy
 
 
 class TestStringMethods(unittest.TestCase):
@@ -55,10 +54,21 @@ class TestStringMethods(unittest.TestCase):
 
     def test_packets_missing_info(self):
         rp = mock_read_packets.read_packets()
-        incomplete_packets = deepcopy(testpackets)
-        for p in incomplete_packets:
-            del p['src']
-        rp.packets_dict_list.append(incomplete_packets)
+        packets = [
+            {
+                "id":"172.17.0.6",
+                "timestamp":"2020-11-23 12:41:52",
+                "protocol":"TCP",
+                "size":"66",
+                "dst":"172.17.0.7",
+                "dst_resolved":"NULL",
+                "dst_port":"50572",
+                "src_resolved":"NULL",
+                "src_port":"5000",
+                "layer":"NULL"
+            }
+        ]
+        rp.packets_dict_list.append(packets)
         result = rp.send_node_status(rp.packets_dict_list)
         self.assertFalse(result == 200)
 
