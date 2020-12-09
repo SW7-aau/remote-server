@@ -3,6 +3,7 @@ import time
 import mock_read_resources
 #import mock_read_process
 import mock_read_packets
+import pyshark
 
 
 class TestStringMethods(unittest.TestCase):
@@ -47,19 +48,8 @@ class TestStringMethods(unittest.TestCase):
 
     def test_packets_sending(self):
         rp = mock_read_packets.read_packets()
-        packet = {
-            "id":"172.17.0.6",
-            "timestamp":"2020-11-23 12:41:53",
-            "protocol":"TCP",
-            "size":"74",
-            "dst":"172.17.0.6",
-            "dst_resolved":"NULL",
-            "dst_port":"5000",
-            "src_resolved":"NULL",
-            "src":"172.17.0.7",
-            "src_port":"50620",
-            "layer":"NULL"
-        }
+        capture = pyshark.LiveCapture(interface='eth0')
+        packet = capture.sniff()
         rp.get_packets(packet, 0)
         result = rp.send_node_status(rp.packets_dict_list)
         self.assertTrue(result == 200)
