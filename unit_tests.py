@@ -62,19 +62,20 @@ class TestStringMethods(unittest.TestCase):
         self.assertFalse(result == 200)
 
 testpackets = [
-   {
-      "id":"172.17.0.6",
-      "timestamp":"2020-11-23 12:41:52",
-      "protocol":"TCP",
-      "size":"66",
-      "dst":"172.17.0.7",
-      "dst_resolved":"NULL",
-      "dst_port":"50572",
-      "src_resolved":"NULL",
-      "src":"172.17.0.6",
-      "src_port":"5000",
-      "layer":"NULL"
-   }
+    {},
+    {
+        "id":"172.17.0.6",
+        "timestamp":"2020-11-23 12:41:52",
+        "protocol":"TCP",
+        "size":"66",
+        "dst":"172.17.0.7",
+        "dst_resolved":"NULL",
+        "dst_port":"50572",
+        "src_resolved":"NULL",
+        "src":"172.17.0.6",
+        "src_port":"5000",
+        "layer":"NULL"
+    }
 ]  
 
 if __name__ == '__main__':
