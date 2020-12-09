@@ -43,7 +43,7 @@ class TestStringMethods(unittest.TestCase):
     def test_resource_empty_message(self):
         rr = mock_read_resources.read_resources()
         result = rr.send_node_status([])
-        self.assertTrue(result == 200)
+        self.assertFalse(result == 200)
 
     def test_packets_sending(self):
         rp = mock_read_packets.read_packets()
