@@ -64,6 +64,8 @@ class TestStringMethods(unittest.TestCase):
         result = rp.send_node_status(rp.packets_dict_list)
         self.assertTrue(result == 200)
 
+    
+
 if __name__ == '__main__':
     unittest.main()
 

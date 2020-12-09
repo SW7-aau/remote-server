@@ -7,7 +7,7 @@ class requests():
             result = mock_app.information_queue(self.request(headers=headers, json=json))
             if result == 'Data Appended':
                 return self.Response(200)
-        return self.Response(500)
+        return self.Response(404)
     class Response():
         def __init__(self, status_code):
             self.status_code = status_code

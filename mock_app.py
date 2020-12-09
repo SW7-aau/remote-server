@@ -50,7 +50,26 @@ def information_queue(request):
 
     }, request.get_json()]
 
+    if request.headers['package_type'] == '1':
+        if not check_resources(request.get_json()):
+            return 'Invalid Message'
+    elif request.headers['package_type'] == '2':
+        if not check_packets():
+            return 'Invalid Message'
+    else:
+        return 'Invalid Package Type'
+
     node.main_queue.append(temp_request)
     return 'Data Appended'
+
+### NEW FUNCTIONS ###
+def check_resources(messages):
+    for m in messages:
+        if 'timestamp' in m and 'CPU%' in m and 'RAM' in m:
+            return True
+        return False
+
+def check_packets():
+    return False
 
 
