@@ -47,10 +47,18 @@ class TestStringMethods(unittest.TestCase):
 
     def test_packets_sending(self):
         rp = mock_read_packets.read_packets()
-        packet = testpackets
-        rp.get_packets(packet, 0)
+        packets = testpackets
+        rp.get_packets(packets, 0)
         result = rp.send_node_status(rp.packets_dict_list)
         self.assertTrue(result == 200)
+
+    def test_packets_missing_info(self):
+        rp = mock_read_packets.read_packets()
+        packets = testpackets
+        del packets['src']
+        rp.get_packets(packets, 0)
+        result = rp.send_node_status(rp.packets_dict_list)
+        self.assertFalse(result == 200)
 
 testpackets = [
    {
