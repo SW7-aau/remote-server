@@ -71,13 +71,13 @@ def check_resources(messages):
 
 def check_packets(messages):
     for m in messages:
-        if m['protocol'] == 'TCP':
+        if m['protocol'] == '6':
             if 'dst' in m and 'dst_resolved' in m and 'dst_port' in m and 'src' in m and 'src_resolved' in m and 'src_port' in m:
                 return True
-        if m['protocol'] == 'UDP':
+        if m['protocol'] == '17':
             if 'dst' in m and 'dst_resolved' in m and 'dst_port' in m and 'src' in m and 'src_resolved' in m and 'src_port' in m and 'layer' in m:
                 return True
-        if m['protocol'] == 'IGMP':
+        if m['protocol'] == '2':
             if 'dst' in m and 'dst_resolved' in m and 'src' in m and 'src_resolved' in m and 'layer' in m:
                 return True
         return False
