@@ -54,6 +54,7 @@ class read_packets():
         headers = {'Content-type': 'application/json',
                 'Accept': 'text/plain',
                 'package_type': '2'}
+        print(json_object)
         r = self.requests.post(url, json=json_object, headers=headers)
         return r.status_code
 
