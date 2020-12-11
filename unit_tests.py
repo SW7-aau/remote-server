@@ -114,6 +114,9 @@ class TestElectionMethods(unittest.TestCase):
     #        args = parser.parse_args(['-i', '1.2.3', '-c', '3000', '-p', '1000'])
     #        print(str(args))
             self.node = mock_river.Node(executor)
+    
+    def tearDown(self):
+        del self.node
 
 
 if __name__ == '__main__':
