@@ -5,8 +5,9 @@ import mock_read_resources
 import mock_read_packets
 import concurrent.futures
 import mock_river
+import mock_app
 
-class TestStringMethods(unittest.TestCase):
+class TestReaderMethods(unittest.TestCase):
 
     def test_resource_sending(self):
         rr = mock_read_resources.read_resources()
@@ -108,30 +109,28 @@ class TestElectionMethods(unittest.TestCase):
         self.node.set_config(config)
         self.assertFalse(self.node.candidacy)
 
-    #def test_become_leader(self):
-    #    self.node.become_leader()
-
     def setUp(self):
-    #    parser = mock_node.argparse.ArgumentParser()
-    #    mock_node.arg_parsing(parser)
+        #Maybe move this outside the class so it doesn't close between tests?
         with concurrent.futures.ThreadPoolExecutor() as executor:
-    #        args = parser.parse_args(['-i', '1.2.3', '-c', '3000', '-p', '1000'])
-    #        print(str(args))
             self.node = mock_river.Node(executor)
 
 
+
+class TestAppMethods(unittest.TestCase):
+
+    def test_sender_greater_term(self):
+        self.assertTrue(False)
+
+    def test_sender_is_leader(self):
+        self.assertTrue(False)
+    
+    def test_sender_lower_term(self):
+        self.assertFalse(True)
+
+    def setUp(self):
+        self.app = mock_app.App()
+
+    
+
 if __name__ == '__main__':
     unittest.main()
-
-    #As of writing, process related tests will fail
-    #As there is, to my knowledge, no handling of them in the nodes/api.
-    # def test_process_sending(self):
-    #    rp = mock_read_process.read_processes()
-    #   rp.get_processes()
-    #  result = rp.send_node_status(rp.processes_dict_list)
-    # self.assertTrue(result == 200)
-
-    #def test_process_missing_message(self):
-    #    rp = mock_read_process.read_processes()
-    #    result = rp.send_node_status({})
-    #    self.assertFalse(result == 200)

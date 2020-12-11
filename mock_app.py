@@ -38,6 +38,27 @@ class requests():
 #    return parser.parse_args()
 
 #args = arg_parsing()
+class App():
+    def __init__(self):
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            self.node = mock_river.Node(executor)
+            
+    def check_headers(self, headers):
+        if int(headers['term']) < int(self.node.term):
+            return False
+        if int(headers['term']) > int(self.node.term):
+            if node.verbosity == 1:
+                print(self.node.ip, ' were ', self.node.status,
+                    ' and had lower term limit'
+                    ' than sender and became follower.')
+            self.node.become_follower()
+            self.node.update_term(int(headers['term']))
+        if headers['status'] == 'Leader':
+            self.node.leader_ip = headers['ip_address']
+
+        return True
+
+
 request = requests()
 with concurrent.futures.ThreadPoolExecutor() as executor:
     node = mock_river.Node(executor)
