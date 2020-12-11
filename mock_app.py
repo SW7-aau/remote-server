@@ -23,24 +23,24 @@ class requests():
         def __init__(self, status_code):
             self.status_code = status_code
 
-def arg_parsing():
-    parser = argparse.ArgumentParser(prog='Read Packets',
-                                     description='Read Network Packets')
-    parser.add_argument('-i', '--ip-address',
-                        help='IP Address of the current node.')
-    parser.add_argument('-c', '--cluster-id', type=int,
-                        help='ID of the cluster the current node is in.')
-    parser.add_argument('-p', '--port', type=int,
-                        help='The port the current node is using.')
-    parser.add_argument('-v', '--verbosity', type=int, default=1,
-                        help='Increase output verbosity.')
+#def arg_parsing():
+#    parser = argparse.ArgumentParser(prog='Read Packets',
+#                                     description='Read Network Packets')
+#    parser.add_argument('-i', '--ip-address',
+#                        help='IP Address of the current node.')
+#    parser.add_argument('-c', '--cluster-id', type=int,
+#                        help='ID of the cluster the current node is in.')
+#    parser.add_argument('-p', '--port', type=int,
+#                        help='The port the current node is using.')
+#    parser.add_argument('-v', '--verbosity', type=int, default=1,
+#                        help='Increase output verbosity.')
+#
+#    return parser.parse_args()
 
-    return parser.parse_args()
-
-args = arg_parsing()
+#args = arg_parsing()
 request = requests()
 with concurrent.futures.ThreadPoolExecutor() as executor:
-    node = mock_river.Node(executor, args)
+    node = mock_river.Node(executor)
 
 def information_queue(request):
     temp_request = [{

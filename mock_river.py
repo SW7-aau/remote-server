@@ -23,7 +23,7 @@ class Node:
         elif active != 1:
             self.candidacy = False
         print(len(self.config))
-        
+
 
 
 
