@@ -87,15 +87,14 @@ class TestStringMethods(unittest.TestCase):
 
 
 
-    #ELECTION TESTS
-
+class TestElectionMethods(unittest.TestCase):
     def test_own_ip_in_config(self):
         config = {'127.0.0.1': '1'}
         self.assertTrue(False)
 
     def test_own_ip_not_in_config(self):
         config = {'172.17.0.6': '1'}
-        self.assertFalse(node.set_config(config))
+        self.assertFalse(self.node.set_config(config))
 
     def test_successful_candidacy(self):
         self.assertTrue(False)
@@ -112,7 +111,7 @@ class TestStringMethods(unittest.TestCase):
         with concurrent.futures.ThreadPoolExecutor() as executor:
     #        args = parser.parse_args(['-i', '1.2.3', '-c', '3000', '-p', '1000'])
     #        print(str(args))
-            node = mock_river.Node(executor)
+            self.node = mock_river.Node(executor)
 
 
 if __name__ == '__main__':
