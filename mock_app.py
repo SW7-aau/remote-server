@@ -47,7 +47,7 @@ class App():
         if int(headers['term']) < int(self.node.term):
             return False
         if int(headers['term']) > int(self.node.term):
-            if node.verbosity == 1:
+            if self.node.verbosity == 1:
                 print(self.node.ip, ' were ', self.node.status,
                     ' and had lower term limit'
                     ' than sender and became follower.')

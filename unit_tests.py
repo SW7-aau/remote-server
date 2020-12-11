@@ -129,11 +129,10 @@ class TestAppMethods(unittest.TestCase):
     def test_sender_is_leader(self):
         headers = {
             'term': '1',
-            'status': 'Candidate',
+            'status': 'Leader',
             'ip_adress': '172.17.0.6'
         }
         self.app.check_headers(headers)
-        print(self.app.node.leader_ip)
         self.assertTrue(self.app.node.leader_ip == '172.17.0.6')
     
     def test_sender_lower_term(self):
