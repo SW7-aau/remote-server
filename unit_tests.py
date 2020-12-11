@@ -133,6 +133,7 @@ class TestAppMethods(unittest.TestCase):
             'ip_adress': '172.17.0.6'
         }
         self.app.check_headers(headers)
+        print(self.app.node.leader_ip)
         self.assertTrue(self.app.node.leader_ip == '172.17.0.6')
     
     def test_sender_lower_term(self):
