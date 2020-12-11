@@ -39,8 +39,7 @@ class requests():
 
 #args = arg_parsing()
 request = requests()
-with concurrent.futures.ThreadPoolExecutor() as executor:
-    node = mock_river.Node(executor)
+node = mock_river.Node()
 
 def information_queue(request):
     temp_request = [{

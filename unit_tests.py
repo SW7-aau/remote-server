@@ -108,15 +108,7 @@ class TestElectionMethods(unittest.TestCase):
     #    self.node.become_leader()
 
     def setUp(self):
-    #    parser = mock_node.argparse.ArgumentParser()
-    #    mock_node.arg_parsing(parser)
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-    #        args = parser.parse_args(['-i', '1.2.3', '-c', '3000', '-p', '1000'])
-    #        print(str(args))
-            self.node = mock_river.Node(executor)
-    
-    def tearDown(self):
-        del self.node
+        self.node = mock_river.Node()
 
 
 if __name__ == '__main__':
