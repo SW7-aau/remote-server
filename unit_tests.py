@@ -129,7 +129,12 @@ class TestAppMethods(unittest.TestCase):
         self.assertTrue(False)
     
     def test_sender_lower_term(self):
-        self.assertFalse(True)
+        headers = {
+            'term': '1',
+            'status': 'Candidate'
+        }
+        self.app.node.term = 5
+        self.assertFalse(self.app.check_headers(headers))
 
     def setUp(self):
         self.app = mock_app.App()
