@@ -119,7 +119,11 @@ class TestElectionMethods(unittest.TestCase):
 class TestAppMethods(unittest.TestCase):
 
     def test_sender_greater_term(self):
-        self.assertTrue(False)
+        headers = {
+            'term': '1',
+            'status': 'Candidate'
+        }
+        self.assertTrue(self.app.check_headers(headers))
 
     def test_sender_is_leader(self):
         self.assertTrue(False)
