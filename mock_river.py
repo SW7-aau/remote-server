@@ -2,10 +2,10 @@ import time
 from random import Random
 import hashlib
 import base64
-import concurrent.futures
 
 class Node:
-    def __init__(self):
+    def __init__(self, executor):
+        self.executor = executor
         self.ip = "127.0.0.1"
         self.config = {}
         self.candidacy = False
@@ -18,8 +18,7 @@ class Node:
             print(active)
             if self.candidacy is False and active == 1:
                 self.candidacy = True
-                with concurrent.futures.ThreadPoolExecutor() as executor:
-                    executor.submit(self.timer)
+                self.executor.submit(self.timer)
             elif active != 1:
                 self.candidacy = False
             print(len(self.config))
