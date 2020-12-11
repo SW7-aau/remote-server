@@ -44,6 +44,8 @@ class App():
             self.node = mock_river.Node(executor)
 
     def check_headers(self, headers): #REMOVE self.
+        if not ('term' in headers or 'status' in headers or 'ip_address' in headers):
+            return False
         if int(headers['term']) < int(self.node.term):
             return False
         if int(headers['term']) > int(self.node.term):
