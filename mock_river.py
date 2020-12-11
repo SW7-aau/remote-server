@@ -18,7 +18,7 @@ class Node:
             print(active)
             if self.candidacy is False and active == 1:
                 self.candidacy = True
-                self.executor.submit(self.timer)
+                #self.executor.submit(self.timer) #REINSTATE
             elif active != 1:
                 self.candidacy = False
             print(len(self.config))
