@@ -12,17 +12,16 @@ class Node:
         self.main_queue = []
 
     def set_config(self, config):
-        if not self.ip in config:
-            return False
-        self.config = config
-        active = int(self.config[self.ip])
-        print(active)
-        if self.candidacy is False and active == 1:
-            self.candidacy = True
-            self.executor.submit(self.timer)
-        elif active != 1:
-            self.candidacy = False
-        print(len(self.config))
+        if self.ip in config:
+            self.config = config
+            active = int(self.config[self.ip])
+            print(active)
+            if self.candidacy is False and active == 1:
+                self.candidacy = True
+                self.executor.submit(self.timer)
+            elif active != 1:
+                self.candidacy = False
+            print(len(self.config))
 
 
 
