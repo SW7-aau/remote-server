@@ -144,6 +144,24 @@ class TestAppMethods(unittest.TestCase):
         self.app.node.term = 5
         self.assertFalse(self.app.check_headers(headers))
 
+    def test_all_keys_present(self):
+        headers = {
+            'term': '1',
+            'status': 'Candidate',
+            'ip_address': '172.17.0.6'
+        }
+        self.assertTrue(self.app.check_headers(headers))
+
+    def test_one_key_missing(self):
+        headers = {
+            'term': '1',
+            'ip_address': '172.17.0.6'
+        }
+        self.assertFalse(self.app.check_headers(headers))
+
+    def test_no_keys_present(self):
+        self.assertFalse(self.app.check_headers({}))
+
     def setUp(self):
         self.app = mock_app.App()
 
