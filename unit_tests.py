@@ -122,7 +122,7 @@ class TestAppMethods(unittest.TestCase):
         headers = {
             'term': '1',
             'status': 'Candidate',
-            'ip_adress': '172.17.0.6'
+            'ip_address': '172.17.0.6'
         }
         self.assertTrue(self.app.check_headers(headers))
 
@@ -130,7 +130,7 @@ class TestAppMethods(unittest.TestCase):
         headers = {
             'term': '1',
             'status': 'Leader',
-            'ip_adress': '172.17.0.6'
+            'ip_address': '172.17.0.6'
         }
         self.app.check_headers(headers)
         self.assertTrue(self.app.node.leader_ip == '172.17.0.6')
@@ -139,7 +139,7 @@ class TestAppMethods(unittest.TestCase):
         headers = {
             'term': '1',
             'status': 'Candidate',
-            'ip_adress': '172.17.0.6'
+            'ip_address': '172.17.0.6'
         }
         self.app.node.term = 5
         self.assertFalse(self.app.check_headers(headers))
