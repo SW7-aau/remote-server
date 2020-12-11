@@ -3,8 +3,8 @@ import time
 import mock_read_resources
 #import mock_read_process
 import mock_read_packets
-
-import mock_node
+import concurrent.futures
+import mock_river
 
 class TestStringMethods(unittest.TestCase):
 
@@ -85,17 +85,34 @@ class TestStringMethods(unittest.TestCase):
         result = rp.send_node_status(packets)
         self.assertFalse(result == 200)
 
-    def test_become_leader(self):
-        self.node.become_leader()
 
 
-    #def setUp(self):
+    #ELECTION TESTS
+
+    def test_own_ip_in_config(self):
+        config = {'127.0.0.1': '1'}
+        self.assertTrue(False)
+
+    def test_own_ip_not_in_config(self):
+        config = {'172.17.0.6': '1'}
+        self.assertFalse(node.set_config(config))
+
+    def test_successful_candidacy(self):
+        self.assertTrue(False)
+
+    def test_unsuccessful_candidacy(self):
+        self.assertFalse(True)
+
+    #def test_become_leader(self):
+    #    self.node.become_leader()
+
+    def setUp(self):
     #    parser = mock_node.argparse.ArgumentParser()
     #    mock_node.arg_parsing(parser)
-    #    with concurrent.futures.ThreadPoolExecutor() as executor:
+        with concurrent.futures.ThreadPoolExecutor() as executor:
     #        args = parser.parse_args(['-i', '1.2.3', '-c', '3000', '-p', '1000'])
     #        print(str(args))
-    #        self.node = mock_node.node_mock(executor, args)
+            node = mock_river.Node(executor)
 
 
 if __name__ == '__main__':
