@@ -99,10 +99,14 @@ class TestElectionMethods(unittest.TestCase):
         self.assertFalse(len(self.node.config) == 1)
 
     def test_successful_candidacy(self):
-        self.assertTrue(False)
+        config = {'127.0.0.1': '1'}
+        self.node.set_config(config)
+        self.assertTrue(self.node.candidacy)
 
     def test_unsuccessful_candidacy(self):
-        self.assertFalse(True)
+        config = {'127.0.0.1': '0'}
+        self.node.set_config(config)
+        self.assertFalse(self.node.candidacy)
 
     #def test_become_leader(self):
     #    self.node.become_leader()
@@ -114,9 +118,6 @@ class TestElectionMethods(unittest.TestCase):
     #        args = parser.parse_args(['-i', '1.2.3', '-c', '3000', '-p', '1000'])
     #        print(str(args))
             self.node = mock_river.Node(executor)
-    
-    def tearDown(self):
-        del self.node
 
 
 if __name__ == '__main__':
