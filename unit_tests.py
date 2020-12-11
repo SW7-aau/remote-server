@@ -121,17 +121,25 @@ class TestAppMethods(unittest.TestCase):
     def test_sender_greater_term(self):
         headers = {
             'term': '1',
-            'status': 'Candidate'
+            'status': 'Candidate',
+            'ip_adress': '172.17.0.6'
         }
         self.assertTrue(self.app.check_headers(headers))
 
     def test_sender_is_leader(self):
-        self.assertTrue(False)
+        headers = {
+            'term': '1',
+            'status': 'Candidate',
+            'ip_adress': '172.17.0.6'
+        }
+        self.app.check_headers(headers)
+        self.assertTrue(self.app.node.leader_ip == '172.17.0.6')
     
     def test_sender_lower_term(self):
         headers = {
             'term': '1',
-            'status': 'Candidate'
+            'status': 'Candidate',
+            'ip_adress': '172.17.0.6'
         }
         self.app.node.term = 5
         self.assertFalse(self.app.check_headers(headers))

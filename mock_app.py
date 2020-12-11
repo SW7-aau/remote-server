@@ -42,8 +42,8 @@ class App():
     def __init__(self):
         with concurrent.futures.ThreadPoolExecutor() as executor:
             self.node = mock_river.Node(executor)
-            
-    def check_headers(self, headers):
+
+    def check_headers(self, headers): #REMOVE self.
         if int(headers['term']) < int(self.node.term):
             return False
         if int(headers['term']) > int(self.node.term):
