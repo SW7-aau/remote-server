@@ -15,12 +15,9 @@ class read_resources():
         self.resources_dict_list.append(status_struct)
 
     def send_node_status(self, json_object):
-        url = "http://127.0.0.1:5000/sendtohost"
+        url = "http://127.0.0.1:5000/storedata"
         headers = {'Content-type': 'application/json',
                 'Accept': 'text/plain',
-                'auth-token': 'testtoken',
-                'package_type': '1',
-                'nodeid': 'testid',
-                'ip-address': "127.0.0.1"}
+                'package_type': '1'}
         r = self.requests.post(url, json=json_object, headers=headers)
         return r.status_code

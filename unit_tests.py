@@ -2,10 +2,7 @@ import unittest
 import time
 import mock_read_resources
 #import mock_read_process
-#import mock_read_packets
-from flask import Flask
-from app import app
-import concurrent.futures
+import mock_read_packets
 
 import mock_node
 
@@ -19,7 +16,7 @@ class TestStringMethods(unittest.TestCase):
 
     def test_resource_missing_message_timestamp(self):
         rr = mock_read_resources.read_resources()
-        message = [{'CPU%': "50%", 'RAM': "30%"}]
+        message = [{'CPU%': "50%", 'RAM%': "30%"}]
         result = rr.send_node_status(message)
         self.assertFalse(result == 200)
 
@@ -47,19 +44,59 @@ class TestStringMethods(unittest.TestCase):
     def test_resource_empty_message(self):
         rr = mock_read_resources.read_resources()
         result = rr.send_node_status([])
+        self.assertFalse(result == 200)
+
+    def test_packets_sending(self):
+        rp = mock_read_packets.read_packets()
+        packets = [
+            {
+                "id":"172.17.0.6",
+                "timestamp":"2020-11-23 12:41:52",
+                "protocol":"TCP",
+                "size":"66",
+                "dst":"172.17.0.7",
+                "dst_resolved":"NULL",
+                "dst_port":"50572",
+                "src_resolved":"NULL",
+                "src":"172.17.0.6",
+                "src_port":"5000",
+                "layer":"NULL"
+            }
+        ]
+        result = rp.send_node_status(packets)
         self.assertTrue(result == 200)
+
+    def test_packets_missing_info(self):
+        rp = mock_read_packets.read_packets()
+        packets = [
+            {
+                "id":"172.17.0.6",
+                "timestamp":"2020-11-23 12:41:52",
+                "protocol":"TCP",
+                "size":"66",
+                "dst":"172.17.0.7",
+                "dst_resolved":"NULL",
+                "dst_port":"50572",
+                "src_resolved":"NULL",
+                "src_port":"5000",
+                "layer":"NULL"
+            }
+        ]
+        result = rp.send_node_status(packets)
+        self.assertFalse(result == 200)
 
     def test_become_leader(self):
         self.node.become_leader()
 
 
-    def setUp(self):
-        parser = mock_node.argparse.ArgumentParser()
-        mock_node.arg_parsing(parser)
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            args = parser.parse_args(['-i', '1.2.3', '-c', '3000', '-p', '1000'])
-            print(str(args))
-            self.node = mock_node.node_mock(executor, args)
+    #def setUp(self):
+    #    parser = mock_node.argparse.ArgumentParser()
+    #    mock_node.arg_parsing(parser)
+    #    with concurrent.futures.ThreadPoolExecutor() as executor:
+    #        args = parser.parse_args(['-i', '1.2.3', '-c', '3000', '-p', '1000'])
+    #        print(str(args))
+    #        self.node = mock_node.node_mock(executor, args)
+
 
 if __name__ == '__main__':
     unittest.main()
