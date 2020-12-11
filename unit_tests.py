@@ -90,10 +90,12 @@ class TestStringMethods(unittest.TestCase):
 class TestElectionMethods(unittest.TestCase):
     def test_own_ip_in_config(self):
         config = {'127.0.0.1': '1'}
+        self.node.set_config(config)
         self.assertTrue(len(self.node.config) == 1)
 
     def test_own_ip_not_in_config(self):
         config = {'172.17.0.6': '1'}
+        self.node.set_config(config)
         self.assertFalse(len(self.node.config) == 1)
 
     def test_successful_candidacy(self):
