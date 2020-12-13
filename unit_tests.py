@@ -116,7 +116,7 @@ class TestElectionMethods(unittest.TestCase):
 
 
 
-class TestAppMethods(unittest.TestCase):
+class TestHeaderMethods(unittest.TestCase):
 
     def test_sender_greater_term(self):
         headers = {
