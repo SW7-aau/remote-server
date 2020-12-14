@@ -52,17 +52,16 @@ class Node:
         self.set_config(cfg)
 
     def set_config(self, config):
-        self.config = config
-        #if self.status == 'Leader':
-        #    self.share_config()
-        active = int(self.config[self.ip])
-        print(active)
-        if self.candidacy is False and active == 1:
-            self.candidacy = True
-            self.executor.submit(self.timer)
-        elif active != 1:
+        if self.ip in config:
+            self.config = config
+            active = int(self.config[self.ip])
+            if self.candidacy is False and active == 1:
+                self.candidacy = True
+                self.executor.submit(self.timer) #REINSTATE
+            elif active != 1:
+                self.candidacy = False
+        else:
             self.candidacy = False
-        print(len(self.config))
 
     def become_follower(self):
         """
@@ -70,7 +69,6 @@ class Node:
         """
         self.status = "Follower"
         self.set_timer()
-        # print(str(self.ip) + " became follower.")
 
     def become_candidate(self):
         """
@@ -235,7 +233,6 @@ class Node:
         while self.candidacy:
             self.time = time.time()
             if self.time >= self.timeout:
-                print('We just timed out')
                 self.set_timer()
                 self.executor.submit(self.timer_handler)
 

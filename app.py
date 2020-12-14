@@ -29,6 +29,8 @@ def arg_parsing():
 
 
 def check_headers(headers):
+    if not ('term' in headers and 'status' in headers and 'ip_address' in headers):
+        return False
     if int(headers['term']) < int(node.term):
         return False
     if int(headers['term']) > int(node.term):
@@ -83,14 +85,13 @@ def unpack_and_send(queue):
 
     if ((resources_status == 200 or resources_status is None) and (packages_status == 200 or packages_status is None)) or ((resources_hash_status == 1 or resources_hash_status is None) and (packages_hash_status == 1 or packages_hash_status is None)):
         url = 'http://' + queue[0][0]['ip_address'] + ':' + node.port + '/datasent'
-        print("data sent response sent to " + url)
+        if node.verbosity == 1:
+            print("data sent response sent to " + url)
         headers = {'leader_ip_address': node.ip}
 
         r = requests.get(url, headers=headers)
-        if args.verbosity == 2:
-            print(r)
+        if node.verbosity == 2:
         if r.json()['message'] != 'ok':
-            print('Not leader')
 
 
 def check_hash(old_headers, message):
@@ -155,7 +156,8 @@ def send_to_gcp(old_headers, message):
     else:
         return
 
-    print('Sent to: ', old_headers['package_type'])
+    if node.verbosity == 1:
+        print('Sent to: ', old_headers['package_type'])
     headers = {'Content_Type': 'application/json',
                'Accept': 'text/plain',
                'access_token': node.token,
@@ -226,7 +228,6 @@ def leader_send():
 
         if not node.send_queue:
             node.send_queue.append(deepcopy(node.main_queue))
-            # print(node.send_queue)
             node.main_queue.clear()
 
         headers = {
@@ -252,7 +253,6 @@ def data_sent_response():
     Endpoint to tell follower data is sent to GCP, and can be deleted locally
     :return: "ok" if deleted, "Not leader" if called from follower node
     """
-    print('Data is sent')
     if request.headers['leader_ip_address'] == node.leader_ip:
         node.send_queue.clear()
         json_object = {'message': 'ok'}
@@ -274,9 +274,39 @@ def information_queue():
 
     }, request.get_json()]
 
+    if request.headers['package_type'] == '1':
+        if not check_resources(request.get_json()):
+            return 'Invalid Message'
+    elif request.headers['package_type'] == '2':
+        if not check_packets(request.get_json()):
+            return 'Invalid Message'
+    else:
+        return 'Invalid Package Type'
+
     node.main_queue.append(temp_request)
     return 'Data Appended'
 
+### NEW FUNCTIONS ###
+def check_resources(messages):
+    for m in messages:
+        if 'timestamp' in m and 'CPU%' in m and 'RAM%' in m:
+            return True
+        return False
+
+def check_packets(messages):
+    for m in messages:
+        if m['protocol'] == 'TCP':
+            if not ('dst' in m and 'dst_resolved' in m and 'dst_port' in m and 'src' in m and 'src_resolved' in m and 'src_port' in m):
+                return False
+        elif m['protocol'] == 'UDP':
+            if not ('dst' in m and 'dst_resolved' in m and 'dst_port' in m and 'src' in m and 'src_resolved' in m and 'src_port' in m and 'layer' in m):
+                return False
+        elif m['protocol'] == 'IGMP':
+            if not ('dst' in m and 'dst_resolved' in m and 'src' in m and 'src_resolved' in m and 'layer' in m):
+                return False
+        else: 
+            return False
+    return True
 
 # Voting function
 @app.route('/requestvote', methods=['GET'])
