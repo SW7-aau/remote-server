@@ -52,8 +52,8 @@ class Node:
         self.set_config(cfg)
 
     def set_config(self, config):
+        self.config = config
         if self.ip in config:
-            self.config = config
             active = int(self.config[self.ip])
             if self.candidacy is False and active == 1:
                 self.candidacy = True
