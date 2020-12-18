@@ -89,15 +89,6 @@ class TestReaderMethods(unittest.TestCase):
 
 
 class TestElectionMethods(unittest.TestCase):
-    def test_own_ip_in_config(self):
-        config = {'127.0.0.1': '1'}
-        self.node.set_config(config)
-        self.assertTrue(self.node.candidacy)
-
-    def test_own_ip_not_in_config(self):
-        config = {'172.17.0.6': '1'}
-        self.node.set_config(config)
-        self.assertFalse(self.node.candidacy)
 
     def test_successful_candidacy(self):
         config = {'127.0.0.1': '1'}
@@ -106,6 +97,11 @@ class TestElectionMethods(unittest.TestCase):
 
     def test_unsuccessful_candidacy(self):
         config = {'127.0.0.1': '0'}
+        self.node.set_config(config)
+        self.assertFalse(self.node.candidacy)
+
+    def test_own_ip_not_in_config(self):
+        config = {'172.17.0.6': '1'}
         self.node.set_config(config)
         self.assertFalse(self.node.candidacy)
 
