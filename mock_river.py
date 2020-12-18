@@ -16,8 +16,8 @@ class Node:
         self.main_queue = []
 
     def set_config(self, config):
+        self.config = config
         if self.ip in config:
-            self.config = config
             active = int(self.config[self.ip])
             print(active)
             if self.candidacy is False and active == 1:
